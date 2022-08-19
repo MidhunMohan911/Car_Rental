@@ -1,11 +1,11 @@
-import 'dart:developer';
-
 import 'package:car_rental/API/Controller/controller.dart';
 import 'package:car_rental/API/Models/car_model.dart';
-import 'package:car_rental/API/Services/services.dart';
+import 'package:car_rental/API/Models/local_storage.dart';
+import 'package:car_rental/API/Services/wishlist.dart';
 import 'package:car_rental/Screens/Booking%20Details/booking_details.dart';
 import 'package:car_rental/Screens/Location/location.dart';
 import 'package:car_rental/core/core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -14,6 +14,7 @@ class CarDetails extends StatelessWidget {
   CarDetails({Key? key, required this.id}) : super(key: key);
 
   Controller controller = Get.find<Controller>();
+  DateTime date = DateTime(2022, 08, 18);
 
   @override
   Widget build(BuildContext context) {
@@ -86,34 +87,102 @@ class CarDetails extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      const Flexible(
-                        child: SizedBox(
-                          height: 35,
-                          width: 100,
-                          child: Card(
-                            child: TextField(
-                              textAlign: TextAlign.center,
-                              decoration:
-                                  InputDecoration(hintText: 'trip starts'),
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Trip starts',
+                              style: TextStyle(color: kwhite),
                             ),
-                          ),
+                            SizedBox(
+                              height: 35,
+                              width: 130,
+                              child:
+                                  GetBuilder<Controller>(builder: (controller) {
+                                return GestureDetector(
+                                  onTap: () async {
+                                    DateTime? newDate = await showDatePicker(
+                                        context: context,
+                                        initialDate: date,
+                                        firstDate: DateTime.now(),
+                                        lastDate: DateTime(2023));
+                                    if (newDate == null) {
+                                      return;
+                                    }
+                                    date = newDate;
+                                    controller.update();
+                                  },
+                                  child: Card(
+                                      child: Padding(
+                                    padding: const EdgeInsets.only(top: 2),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Text(
+                                          '${date.year}/${date.month}/${date.day}',
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        const Icon(CupertinoIcons.calendar)
+                                      ],
+                                    ),
+                                  )),
+                                );
+                              }),
+                            ),
+                          ],
                         ),
                       ),
                       Text(
-                        'to',
-                        style: TextStyle(color: kwhite),
+                        '\nto',
+                        style: TextStyle(color: kwhite, fontSize: 16),
                       ),
-                      const Flexible(
-                        child: SizedBox(
-                          height: 35,
-                          width: 100,
-                          child: Card(
-                            child: TextField(
-                              textAlign: TextAlign.center,
-                              decoration:
-                                  InputDecoration(hintText: 'trip starts'),
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Trip ends',
+                              style: TextStyle(color: kwhite),
                             ),
-                          ),
+                            SizedBox(
+                              height: 35,
+                              width: 130,
+                              child:
+                                  GetBuilder<Controller>(builder: (controller) {
+                                return GestureDetector(
+                                  onTap: () async {
+                                    DateTime? newDate = await showDatePicker(
+                                        context: context,
+                                        initialDate: date,
+                                        firstDate: DateTime.now(),
+                                        lastDate: DateTime(2023));
+                                    if (newDate == null) {
+                                      return;
+                                    }
+                                    date = newDate;
+                                    controller.update();
+                                  },
+                                  child: Card(
+                                      child: Padding(
+                                    padding: const EdgeInsets.only(top: 2),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Text(
+                                          '${date.year}/${date.month}/${date.day}',
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        const Icon(CupertinoIcons.calendar)
+                                      ],
+                                    ),
+                                  )),
+                                );
+                              }),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -139,8 +208,19 @@ class CarDetails extends StatelessWidget {
                             style: TextStyle(color: Colors.blue, fontSize: 11)),
                       ),
                       const SizedBox(width: 10),
-                      const Text('ADD TO WISHLIST',
-                          style: TextStyle(color: Colors.blue))
+                      TextButton(
+                        child: const Text('ADD TO WISHLIST',
+                            style: TextStyle(color: Colors.blue)),
+                        onPressed: () {
+                          String? userId =
+                              GetLocalStorage.getUserIdAndToken("uId");
+
+                          print(WishlistServices.addWishlist(
+                              userId: userId!, carId: id.id));
+                          print(WishlistServices.getDataFromWishlist(
+                              userId: userId));
+                        },
+                      )
                     ],
                   ),
                   Wrap(

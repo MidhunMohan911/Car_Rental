@@ -1,4 +1,6 @@
+import 'package:car_rental/API/Models/local_storage.dart';
 import 'package:car_rental/Screens/Booking%20History/booking_history.dart';
+import 'package:car_rental/Screens/Home/home.dart';
 import 'package:car_rental/Screens/Log%20in/log_in.dart';
 import 'package:car_rental/Screens/Profile/profile.dart';
 import 'package:car_rental/Screens/Sign%20Up/signup_page.dart';
@@ -58,9 +60,13 @@ PopupMenuButton<String> appBarPopUp(BuildContext context) {
           builder: (context) => const BookingHistory(),
         ));
       } else if (value == 'Logout') {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => LoginPage(),
-        ));
+        GetLocalStorage.deleteUserTokenAnduId();
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => LoginPage(),
+          ),
+          (route) => false,
+        );
       }
     },
     itemBuilder: (context) => const [

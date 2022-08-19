@@ -4,21 +4,26 @@
 
 import 'dart:convert';
 
-Welcome welcomeFromJson(String str) => Welcome.fromJson(json.decode(str));
+// TotalCarsModel welcomeFromJson(String str) =>
+//     TotalCarsModel.fromJson(json.decode(str), "sort");
 
-String welcomeToJson(Welcome data) => json.encode(data.toJson());
+// String totalCarsModelToJson(TotalCarsModel data) => json.encode(data.toJson());
 
-class Welcome {
-  Welcome({
+class TotalCarsModel {
+  TotalCarsModel({
     required this.data,
   });
 
   List<CarModel> data;
 
-  factory Welcome.fromJson(Map<String, dynamic> json) => Welcome(
-        data:
-            List<CarModel>.from(json["data"].map((x) => CarModel.fromJson(x))),
-      );
+  factory TotalCarsModel.fromJson(
+    Map<String, dynamic> json,
+    String key,
+  ) {
+    return TotalCarsModel(
+      data: List<CarModel>.from(json[key].map((x) => CarModel.fromJson(x))),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "data": List<dynamic>.from(data.map((x) => x.toJson())),

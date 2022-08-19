@@ -39,6 +39,12 @@ dependencies:
   get: ^4.6.5
   http: ^0.13.5
   json_annotation: ^4.6.0
+  dio: ^4.0.6
+  otp: ^3.1.1
+  sms_autofill: ^2.2.0
+  get_storage: ^2.0.3
+  snippet_coder_utils: ^1.0.12
+  date_time_picker: ^2.1.0
 
 dev_dependencies:
   flutter_test:   

@@ -1,11 +1,19 @@
+import 'package:car_rental/API/Controller/profile_controller.dart';
+import 'package:car_rental/API/Models/local_storage.dart';
+import 'package:car_rental/API/Models/profile_model.dart';
 import 'package:car_rental/core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    UserProfileController userProfileController =
+        Get.put(UserProfileController());
+
     return Scaffold(
         appBar: AppBar(
           title: const Text('Profile',
@@ -13,66 +21,76 @@ class ProfilePage extends StatelessWidget {
           centerTitle: true,
           elevation: 0,
         ),
-        body: SingleChildScrollView(
-            physics: const ClampingScrollPhysics(),
-            child: Column(
-              children: [
-                Stack(
-                  children: [
-                    Container(
-                      height: 80,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(100),
-                          bottomRight: Radius.circular(100),
+        body: Obx(() {
+          ProfileModel? userData = userProfileController.profileModel.value;
+          if (userData!.name == null) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          return SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
+              child: Column(
+                children: [
+                  Stack(
+                    children: [
+                      Container(
+                        height: 80,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(100),
+                            bottomRight: Radius.circular(100),
+                          ),
+                          color: themeColor,
                         ),
-                        color: themeColor,
                       ),
-                    ),
-                    const Center(
-                      child: CircleAvatar(
-                        backgroundImage: AssetImage(
-                            'assets/images/profile-photo_GREYDARK-scaled.jpg'),
-                        radius: 70,
+                      const Center(
+                        child: CircleAvatar(
+                          backgroundImage: AssetImage(
+                              'assets/images/profile-photo_GREYDARK-scaled.jpg'),
+                          radius: 70,
+                        ),
+                      )
+                    ],
+                  ),
+                  sizedBox15,
+                  ProfileField(title: 'Name', detail: userData.name!),
+                  ProfileField(title: 'Email', detail: userData.email!),
+                  ProfileField(
+                      title: 'Phone', detail: userData.phone.toString()),
+                  ProfileField(title: 'Age', detail: userData.age.toString()),
+                  ProfileField(title: 'Gender', detail: userData.gender!),
+                  ProfileField(title: 'District', detail: userData.district!),
+                  ProfileField(title: 'Address', detail: userData.address!),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          shape: const StadiumBorder(),
+                          side: BorderSide(width: 2, color: themeColor),
+                        ),
+                        onPressed: () {},
+                        child: Text(
+                          'Edit',
+                          style: TextStyle(color: themeColor),
+                        ),
                       ),
-                    )
-                  ],
-                ),
-                sizedBox15,
-                const ProfileField(title: 'Name', detail: 'Midhun Mohan'),
-                const ProfileField(
-                    title: 'Email', detail: 'midhunmohan911@gmail.com'),
-                const ProfileField(title: 'Phone', detail: '7025793652'),
-                const ProfileField(title: 'Age', detail: '18'),
-                const ProfileField(title: 'Gender', detail: 'Male'),
-                const ProfileField(title: 'District', detail: 'Palakkad'),
-                const ProfileField(
-                    title: 'Address', detail: 'kdjjkd, kdjkjdk, hfiie, dkh'),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        shape: const StadiumBorder(),
-                        side: BorderSide(width: 2, color: themeColor),
-                      ),
-                      onPressed: () {},
-                      child: Text(
-                        'Edit',
-                        style: TextStyle(color: themeColor),
-                      ),
-                    ),
-                    ElevatedButton(
-                      style: elvButtonStyle,
-                      onPressed: () {},
-                      child: const Text('Reset Password'),
-                    )
-                  ],
-                ),
-                sizedBox30
-              ],
-            )));
+                      ElevatedButton(
+                        style: elvButtonStyle,
+                        onPressed: () {
+                          print(GetLocalStorage.getUserIdAndToken("uId"));
+                        },
+                        child: const Text('Reset Password'),
+                      )
+                    ],
+                  ),
+                  sizedBox30
+                ],
+              ));
+        }));
   }
 }
 

@@ -1,12 +1,14 @@
 import 'dart:developer';
 
-import 'package:car_rental/API/Controller/profile_controller.dart';
+import 'package:car_rental/API/Services/loginandsignup.dart';
 import 'package:car_rental/Screens/Home/home.dart';
+import 'package:car_rental/Screens/Log%20in/Widgets/otp_login.dart';
 import 'package:car_rental/Screens/Sign%20Up/Widgets/textform.dart';
 import 'package:car_rental/Screens/Sign%20Up/signup_page.dart';
 import 'package:car_rental/core/core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_connect.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 
@@ -14,6 +16,8 @@ class LoginPage extends StatelessWidget {
   LoginPage({Key? key}) : super(key: key);
 
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _userNameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -65,9 +69,35 @@ class LoginPage extends StatelessWidget {
                               fontWeight: FontWeight.w500,
                               fontSize: 20)),
                       sizedBox10,
-                      TextFormPage(title: 'Name'),
+                      TextFormPage(
+                        title: 'Email',
+                        controller: _userNameController,
+                        obscuretext: false,
+                        keyboardtype: TextInputType.emailAddress,
+                        validator: (String? value) {
+                          if (value!.isEmpty || !value.isEmail) {
+                            return "Enter Correct Email Address";
+                          } else {
+                            return null;
+                          }
+                        },
+                      ),
                       sizedBox15,
-                      TextFormPage(title: 'Password'),
+                      TextFormPage(
+                          title: 'Password',
+                          controller: _passwordController,
+                          obscuretext: true,
+                          validator: (value) {
+                            RegExp regex = RegExp(
+                                r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+                            if (value!.isEmpty) {
+                              return 'Please enter password';
+                            } else if (value.length < 6) {
+                              return 'please enter atleast 6 digit password';
+                            }
+
+                            return null;
+                          }),
                       sizedBox30,
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -86,11 +116,10 @@ class LoginPage extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: ElevatedButton(
                                 onPressed: () async {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => HomeScreen(),
-                                    ),
-                                  );
+                                  UserAuthService.loginUser(
+                                      userName: _userNameController.text,
+                                      password:
+                                          _passwordController.text.trim());
                                 },
                                 child: const Text('LOGIN ➲')),
                           ),
@@ -101,7 +130,8 @@ class LoginPage extends StatelessWidget {
                           onPressed: () {
                             showDialog(
                                 context: context,
-                                builder: (context) => buildLoginWithOTP());
+                                builder: (context) =>
+                                    LoginWithOtp(formKey: _formKey));
                           },
                           child: Text(
                             'LOGIN WITH OTP',
@@ -128,8 +158,7 @@ class LoginPage extends StatelessWidget {
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () => Navigator.of(context)
                                           .push(MaterialPageRoute(
-                                        builder: (context) =>
-                                            const SignUpPage(),
+                                        builder: (context) => SignUpPage(),
                                       )),
                                 text: 'Sign Up ?',
                                 style: const TextStyle(
@@ -153,47 +182,121 @@ class LoginPage extends StatelessWidget {
   }
 
   //----------Login with OTP---------//
-  Widget buildLoginWithOTP() => AlertDialog(
-        backgroundColor: const Color.fromARGB(255, 241, 237, 237),
-        content: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Text(
-                  'Enter your Mobile Number',
-                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
-                ),
-                sizedBox15,
-                TextFormField(
-                  maxLines: 1,
-                  keyboardType: TextInputType.phone,
-                  style: TextStyle(color: kwhite),
-                  decoration: const InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.black,
-                        ),
+}
+
+// class LoginWithOtp extends StatelessWidget {
+//   const LoginWithOtp({
+//     Key? key,
+//     required GlobalKey<FormState> formKey,
+//   })  : _formKey = formKey,
+//         super(key: key);
+
+//   final GlobalKey<FormState> _formKey;
+
+//   @override
+//   Widget build(BuildContext context) => AlertDialog(
+//         backgroundColor: const Color.fromARGB(255, 241, 237, 237),
+//         content: Form(
+//             key: _formKey,
+//             child: Column(
+//               mainAxisSize: MainAxisSize.min,
+//               crossAxisAlignment: CrossAxisAlignment.center,
+//               children: [
+//                 const Text(
+//                   'Enter your Mobile Number',
+//                   style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
+//                 ),
+//                 sizedBox15,
+//                 TextFormField(
+//                   maxLines: 1,
+//                   keyboardType: TextInputType.phone,
+//                   style: const TextStyle(color: Colors.black),
+//                   decoration: const InputDecoration(
+//                       enabledBorder: OutlineInputBorder(
+//                         borderSide: BorderSide(
+//                           color: Colors.black,
+//                         ),
+//                       ),
+//                       focusedBorder: OutlineInputBorder(
+//                         borderSide: BorderSide(
+//                           color: Colors.black,
+//                         ),
+//                       ),
+//                       hintText: 'Mobile Number',
+//                       hintStyle: TextStyle(color: Colors.black)),
+//                 ),
+//                 ElevatedButton(
+//                   onPressed: () {
+//                     showDialog(
+//                         context: context,
+//                         builder: (context) => OtpNumber(formKey: _formKey));
+//                   },
+//                   style: ElevatedButton.styleFrom(
+//                     shape: RoundedRectangleBorder(
+//                       borderRadius: BorderRadius.circular(5),
+//                     ),
+//                   ),
+//                   child: const Text("CONFIRM"),
+//                 )
+//               ],
+//             )),
+//       );
+// }
+
+class OtpNumber extends StatelessWidget {
+  const OtpNumber({
+    Key? key,
+    required GlobalKey<FormState> formKey,
+  })  : _formKey = formKey,
+        super(key: key);
+
+  final GlobalKey<FormState> _formKey;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: const Color.fromARGB(255, 241, 237, 237),
+      content: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                'Enter OTP Number',
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
+              ),
+              sizedBox15,
+              TextFormField(
+                //maxLength: 4,
+                maxLines: 1,
+                keyboardType: TextInputType.number,
+                style: TextStyle(color: kwhite),
+                decoration: const InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.black,
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.black,
-                        ),
-                      ),
-                      hintText: 'Mobile Number',
-                      hintStyle: TextStyle(color: Colors.black)),
-                ),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
                     ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.black,
+                      ),
+                    ),
+                    hintText: 'Otp Number',
+                    hintStyle: TextStyle(color: Colors.black)),
+              ),
+              ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
                   ),
-                  child: const Text("LOGIN"),
-                )
-              ],
-            )),
-      );
+                ),
+                child: const Text("LOGIN ➲"),
+              )
+            ],
+          )),
+    );
+  }
 }

@@ -1,7 +1,6 @@
 import 'package:car_rental/core/core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+
 
 class TextFormPage extends StatelessWidget {
   TextFormPage(
@@ -10,18 +9,19 @@ class TextFormPage extends StatelessWidget {
       this.validator,
       this.controller,
       this.keyboardtype,
-      this.obscuretext})
+       required this.obscuretext})
       : super(key: key);
   String title;
-  FormFieldValidator? validator;
+  FormFieldValidator<String>? validator;
   TextEditingController? controller;
   TextInputType? keyboardtype;
-  final bool? obscuretext;
+  final bool obscuretext ;
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
         child: TextFormField(
+          obscureText: obscuretext,
           controller: controller,
           keyboardType: keyboardtype,
           maxLines: 1,

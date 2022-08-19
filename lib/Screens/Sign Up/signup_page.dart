@@ -1,22 +1,34 @@
-import 'dart:developer';
-
-import 'package:car_rental/API/Controller/profile_controller.dart';
+import 'package:car_rental/API/Controller/controller.dart';
+import 'package:car_rental/API/Models/profile_model.dart';
+import 'package:car_rental/API/Services/loginandsignup.dart';
 import 'package:car_rental/Screens/Log%20in/log_in.dart';
 import 'package:car_rental/Screens/Sign%20Up/Widgets/textform.dart';
 import 'package:car_rental/core/core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_connect/http/src/response/response.dart';
-
+import 'package:get/get.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 
 class SignUpPage extends StatelessWidget {
-  const SignUpPage({Key? key}) : super(key: key);
+  SignUpPage({Key? key}) : super(key: key);
 
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController mobileController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
+
+  TextEditingController districtController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  Controller controller = Get.put(Controller());
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+
     return SafeArea(
       child: Scaffold(
         body: Stack(
@@ -52,93 +64,358 @@ class SignUpPage extends StatelessWidget {
                         ]),
                     child: Align(
                       alignment: Alignment.topCenter,
-                      child: Column(
-                        children: [
-                          sizedBox15,
-                          const CircleAvatar(
-                            backgroundImage:
-                                AssetImage('assets/images/lock.jpeg'),
-                            radius: 22,
-                            backgroundColor: Colors.white,
-                          ),
-                          Text('Sign Up',
-                              style: TextStyle(
+                      child: Form(
+                        key: formKey,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              sizedBox15,
+                              const CircleAvatar(
+                                backgroundImage:
+                                    AssetImage('assets/images/lock.jpeg'),
+                                radius: 22,
+                                backgroundColor: Colors.white,
+                              ),
+                              Text(
+                                'Sign Up',
+                                style: TextStyle(
                                   color: kwhite,
                                   fontWeight: FontWeight.w500,
-                                  fontSize: 20)),
-                          sizedBox10,
-                          TextFormPage(title: 'Name'),
-                          TextFormPage(title: 'Email'),
-                          TextFormPage(title: 'Mobile'),
-                          TextFormPage(title: 'Address'),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              SizedBox(
-                                  width: width * .22,
-                                  child: TextFormPage(title: 'Age')),
-                              SizedBox(
-                                  width: width * .28, child: buildGender()),
-                              SizedBox(
-                                  width: width * .3,
-                                  child: TextFormPage(title: 'District'))
-                            ],
-                          ),
-                          TextFormPage(title: 'Password'),
-                          TextFormPage(title: 'Confirm Password'),
-                          sizedBox15,
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 15),
-                                child: ElevatedButton(
-                                  onPressed: () {},
-                                  child: const Text('✘ CLOSE'),
-                                  style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all(kRed)),
+                                  fontSize: 20,
                                 ),
                               ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 15),
-                                child: ElevatedButton(
-                                    onPressed: () async {
-                                      Response response =
-                                          await ProfileController()
-                                              .signUpUser();
-                                      log(response.body.toString());
-                                    },
-                                    child: const Text('LOGIN ➲')),
-                              )
+                              sizedBox10,
+                              TextFormPage(
+                                title: 'Name',
+                                controller: nameController,
+                                obscuretext: false,
+                                validator: (value) {
+                                  String pattern = r'(^[a-z A-Z]+$)';
+                                  RegExp regExp = RegExp(pattern.toString());
+                                  if (value!.isEmpty) {
+                                    return 'enter a name';
+                                  } else if (!regExp.hasMatch(value)) {
+                                    return 'please enter a valid name';
+                                  } else if (value.length < 4) {
+                                    return "please enter 4 or more characters";
+                                  }
+                                  return null;
+                                },
+                              ),
+                              TextFormPage(
+                                title: 'Email',
+                                controller: emailController,
+                                keyboardtype: TextInputType.emailAddress,
+                                validator: (String? value) {
+                                  if (value!.isEmpty || !value.isEmail) {
+                                    return "Enter Correct Email Address";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                obscuretext: false,
+                              ),
+                              TextFormPage(
+                                title: 'Mobile',
+                                keyboardtype: TextInputType.phone,
+                                obscuretext: false,
+                                controller: mobileController,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "*required";
+                                  } else if (!value
+                                      .contains(RegExp(r'[0-9]'))) {
+                                    return "please enter numbers";
+                                  } else if (value.length != 10) {
+                                    return "please enter 10 numbers";
+                                  }
+                                  return null;
+                                },
+                              ),
+                              TextFormPage(
+                                title: 'Address',
+                                controller: addressController,
+                                obscuretext: false,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  GetBuilder<Controller>(
+                                      builder: (Controller controller) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(left: 0),
+                                      child: SizedBox(
+                                        height: 30,
+                                        width: 80,
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10),
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              border: Border.all(color: kwhite),
+                                              borderRadius:
+                                                  BorderRadius.circular(5)),
+                                          child: DropdownButton<int>(
+                                            hint: Text(
+                                              "Age",
+                                            ),
+                                            value: controller.ageSelected,
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                            ),
+                                            focusColor: Colors.white,
+                                            isDense: false,
+                                            onChanged: (newValue) {
+                                              controller.setSelected(
+                                                  newValue!.toString(), "age");
+                                            },
+                                            underline: const SizedBox(),
+                                            icon: const Icon(
+                                              Icons.arrow_drop_down,
+                                              color: Colors.black,
+                                            ),
+                                            items: controller.ageList
+                                                .map<DropdownMenuItem<int>>(
+                                                    (value) {
+                                              return DropdownMenuItem<int>(
+                                                value: value,
+                                                child: Text(
+                                                  value.toString(),
+                                                  style: const TextStyle(
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              );
+                                            }).toList(),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }),
+
+                                  // SizedBox(
+                                  //     width: width * .22,
+                                  //     child: TextFormPage(
+                                  //       title: 'Age',
+                                  //       controller: ageController,
+                                  //       validator: (value) {
+                                  //         if (value == null || value.isEmpty) {
+                                  //           return 'enter age';
+                                  //         } else if (int.parse(value) < 17 ||
+                                  //             int.parse(value) > 45) {
+                                  //           return 'please enter b/w 18-45';
+                                  //         }
+                                  //         return null;
+                                  //       },
+                                  //     )),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        border: Border.all(color: kwhite),
+                                        borderRadius: BorderRadius.circular(5)),
+                                    child: SizedBox(
+                                      width: 70,
+                                      //width: width * .26,
+                                      child: GetBuilder<Controller>(
+                                          builder: (controller) {
+                                        return Center(
+                                          child: DropdownButton<String>(
+                                            hint: const Text(
+                                              "Gender",
+                                            ),
+                                            value: controller.selected,
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                            ),
+                                            isDense: true,
+                                            onChanged: (newValue) {
+                                              controller.setSelected(
+                                                newValue!,
+                                                "gender",
+                                              );
+                                            },
+                                            icon: const Icon(
+                                              Icons.arrow_drop_down,
+                                              color: Colors.black,
+                                            ),
+                                            items: controller.listType
+                                                .map<DropdownMenuItem<String>>(
+                                                    (value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Text(value),
+                                              );
+                                            }).toList(),
+                                          ),
+                                        );
+                                      }),
+                                    ),
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        border: Border.all(color: kwhite),
+                                        borderRadius: BorderRadius.circular(5)),
+                                    child: SizedBox(
+                                      // width: width * .25,
+                                      child: GetBuilder<Controller>(
+                                          builder: (controller) {
+                                        return DropdownButton<String>(
+                                          hint: const Text(
+                                            "District",
+                                          ),
+                                          value: controller.districtSelected,
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                          ),
+                                          isDense: true,
+                                          onChanged: (newValue) {
+                                            controller.setSelected(
+                                              newValue!,
+                                              "district",
+                                            );
+                                          },
+                                          icon: const Icon(
+                                              Icons.arrow_drop_down,
+                                              color: Colors.black),
+                                          items: controller.districts
+                                              .map<DropdownMenuItem<String>>(
+                                                  (value) {
+                                            return DropdownMenuItem<String>(
+                                              value: value,
+                                              child: SingleChildScrollView(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                child: Text(
+                                                  value,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            );
+                                          }).toList(),
+                                        );
+                                      }),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              TextFormPage(
+                                  title: 'Password',
+                                  controller: passwordController,
+                                  obscuretext: true,
+                                  validator: (value) {
+                                    RegExp regex = RegExp(
+                                        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+                                    if (value!.isEmpty) {
+                                      return 'Please enter password';
+                                    } else if (value.length < 6) {
+                                      return 'please enter atleast 6 digit password';
+                                    }
+
+                                    return null;
+                                  }),
+                              TextFormPage(
+                                title: 'Confirm Password',
+                                controller: confirmPasswordController,
+                                obscuretext: true,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Please confirm password';
+                                  } else if (passwordController.text !=
+                                      confirmPasswordController.text) {
+                                    return 'Password do not match';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              sizedBox15,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15),
+                                    child: ElevatedButton(
+                                      onPressed: () {},
+                                      child: const Text('✘ CLOSE'),
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all(kRed)),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15),
+                                    child: ElevatedButton(
+                                        onPressed: () async {
+                                          if (controller.selected == null) {
+                                            Get.showSnackbar(
+                                              const GetSnackBar(
+                                                message: "Please select gender",
+                                                title: "Warning!!",
+                                                duration: Duration(
+                                                  seconds: 2,
+                                                ),
+                                              ),
+                                            );
+                                            return;
+                                          }
+
+                                          bool isValid =
+                                              formKey.currentState!.validate();
+
+                                          if (isValid) {
+                                            final ProfileModel profileModel =
+                                                ProfileModel(
+                                              name: nameController.text,
+                                              email: emailController.text,
+                                              phone: int.parse(
+                                                  mobileController.text),
+                                              age: controller.ageSelected,
+                                              gender: controller.selected!,
+                                              address: addressController.text,
+                                              district:
+                                                  controller.districtSelected,
+                                              password: passwordController.text,
+                                            );
+
+                                            UserAuthService.signUpUser(
+                                                profileModel);
+                                          }
+                                        },
+                                        child: const Text('SIGN UP ➲')),
+                                  )
+                                ],
+                              ),
+                              sizedBox15,
+                              RichText(
+                                  text: TextSpan(
+                                      text: ' Already have an account ? ',
+                                      style: TextStyle(
+                                        color: kwhite,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 15,
+                                      ),
+                                      children: [
+                                    TextSpan(
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () => Navigator.of(context)
+                                                  .push(MaterialPageRoute(
+                                                builder: (context) =>
+                                                    LoginPage(),
+                                              )),
+                                        text: 'Sign In ?',
+                                        style: const TextStyle(
+                                          color: Colors.blue,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w500,
+                                        )),
+                                  ])),
                             ],
                           ),
-                          sizedBox15,
-                          RichText(
-                              text: TextSpan(
-                                  text: ' Already have an account ? ',
-                                  style: TextStyle(
-                                    color: kwhite,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 15,
-                                  ),
-                                  children: [
-                                TextSpan(
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () => Navigator.of(context)
-                                              .push(MaterialPageRoute(
-                                            builder: (context) => LoginPage(),
-                                          )),
-                                    text: 'Sign In ?',
-                                    style: const TextStyle(
-                                      color: Colors.blue,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w500,
-                                    )),
-                              ])),
-                        ],
+                        ),
                       ),
                     ),
                   ),
@@ -150,183 +427,4 @@ class SignUpPage extends StatelessWidget {
       ),
     );
   }
-
-  //-------Gender-------//
-  Widget buildGender() => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
-        child: DropdownButton<String>(
-            hint: Text(
-              'Gender',
-              style: TextStyle(color: kwhite),
-            ),
-            underline: Container(
-              height: 2,
-              color: kwhite,
-            ),
-            icon: Icon(Icons.arrow_drop_down, color: kwhite),
-            items: <String>['Male', 'Female', 'Other']
-                .map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (_) {}),
-      );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//   //-----Name-----//
-//   Widget buildName() => Padding(
-//         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
-//         child: TextFormField(
-//           maxLines: 1,
-//           style: TextStyle(color: kwhite),
-//           decoration: InputDecoration(
-//             focusedBorder: outWhiteBorder,
-//             enabledBorder: outWhiteBorder,
-//             labelText: 'Name',
-//             labelStyle: TextStyle(color: kwhite),
-//           ),
-//         ),
-//       );
-
-//   //------Email-------//
-//   Widget buildEmail() => Padding(
-//         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
-//         child: TextFormField(
-//           maxLines: 1,
-//           style: TextStyle(color: kwhite),
-//           decoration: InputDecoration(
-//               enabledBorder: outWhiteBorder,
-//               focusedBorder: outWhiteBorder,
-//               labelText: 'Email',
-//               labelStyle: TextStyle(color: kwhite)),
-//         ),
-//       );
-
-//   //-----Phone-----//
-//   Widget buildPhone() => Padding(
-//         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
-//         child: TextFormField(
-//           maxLines: 1,
-//           keyboardType: TextInputType.phone,
-//           style: TextStyle(color: kwhite),
-//           decoration: InputDecoration(
-//               enabledBorder: outWhiteBorder,
-//               focusedBorder: outWhiteBorder,
-//               labelText: 'Phone',
-//               labelStyle: TextStyle(color: kwhite)),
-//         ),
-//       );
-
-//   //------Address------//
-//   Widget buildAddress() => Padding(
-//         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
-//         child: TextFormField(
-//           maxLines: 3,
-//           style: TextStyle(color: kwhite),
-//           decoration: InputDecoration(
-//               enabledBorder: outWhiteBorder,
-//               focusedBorder: outWhiteBorder,
-//               labelText: 'Address',
-//               labelStyle: TextStyle(color: kwhite)),
-//         ),
-//       );
-
-//   //------Age-------//
-//   Widget buildAge() => Padding(
-//         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
-//         child: TextFormField(
-//           maxLines: 1,
-//           keyboardType: TextInputType.number,
-//           style: TextStyle(color: kwhite),
-//           decoration: InputDecoration(
-//               enabledBorder: outWhiteBorder,
-//               focusedBorder: outWhiteBorder,
-//               labelText: 'Age',
-//               labelStyle: TextStyle(color: kwhite)),
-//         ),
-//       );
-
-//   //-------Gender-------//
-//   Widget buildGender() => Padding(
-//         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
-//         child: DropdownButton<String>(
-//             hint: Text(
-//               'Gender',
-//               style: TextStyle(color: kwhite),
-//             ),
-//             underline: Container(
-//               height: 2,
-//               color: kwhite,
-//             ),
-//             icon: Icon(Icons.arrow_drop_down, color: kwhite),
-//             items: <String>['Male', 'Female', 'Other']
-//                 .map<DropdownMenuItem<String>>((String value) {
-//               return DropdownMenuItem<String>(
-//                 value: value,
-//                 child: Text(value),
-//               );
-//             }).toList(),
-//             onChanged: (_) {}),
-//       );
-
-//   //-------District-------//
-//   Widget buildDistrict() => Padding(
-//         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
-//         child: TextFormField(
-//           maxLines: 1,
-//           style: TextStyle(color: kwhite),
-//           decoration: InputDecoration(
-//               enabledBorder: outWhiteBorder,
-//               focusedBorder: outWhiteBorder,
-//               labelText: 'District',
-//               labelStyle: TextStyle(color: kwhite)),
-//         ),
-//       );
-
-//   //-------Password-------//
-//   Widget buildPassword() => Padding(
-//         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
-//         child: TextFormField(
-//           maxLines: 1,
-//           style: TextStyle(color: kwhite),
-//           decoration: InputDecoration(
-//               enabledBorder: outWhiteBorder,
-//               focusedBorder: outWhiteBorder,
-//               labelText: 'Password',
-//               labelStyle: TextStyle(color: kwhite)),
-//         ),
-//       );
-
-//   //-------Confirm Password------//
-//   Widget buildConfirmPassword() => Padding(
-//         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
-//         child: TextFormField(
-//           maxLines: 1,
-//           style: TextStyle(color: kwhite),
-//           decoration: InputDecoration(
-//               enabledBorder: outWhiteBorder,
-//               focusedBorder: outWhiteBorder,
-//               labelText: 'Confirm Password',
-//               labelStyle: TextStyle(color: kwhite)),
-//         ),
-//       );
-// }

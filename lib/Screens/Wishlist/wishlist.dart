@@ -1,13 +1,15 @@
+import 'package:car_rental/API/Controller/wishlist_controller.dart';
 import 'package:car_rental/core/core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:get/get.dart';
 
 class WishlistPage extends StatelessWidget {
   const WishlistPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+      WishlistController controller = Get.put(WishlistController());
+
     return Scaffold(
       appBar: AppBar(
         title: appBarTitle(),
@@ -29,7 +31,8 @@ class WishlistPage extends StatelessWidget {
                 WishlistCard(
                     image:
                         'https://firebasestorage.googleapis.com/v0/b/car-rental-booking-a5524.appspot.com/o/carImages%2Famg-gt-exterior-right-front-three-quarter-60800.webp?alt=media&token=00eb7e8b-b005-4dcc-90de-a8f7466dc238',
-                    text: 'Mercedes-Benz AMG GT'),
+                    text:
+                     'Mercedes-Benz AMG GT'),
                 WishlistCard(
                     image:
                         'https://firebasestorage.googleapis.com/v0/b/car-rental-booking-a5524.appspot.com/o/carImages%2Fmini.webp?alt=media&token=3047bebc-d2c3-417d-bcae-07cffa81d878',

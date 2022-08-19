@@ -1,14 +1,57 @@
+
 import 'package:car_rental/API/Models/car_model.dart';
-import 'package:car_rental/API/Services/services.dart';
+import 'package:car_rental/API/Services/car_services.dart';
 import 'package:get/get.dart';
 
+// enum DropdownEnums { age, gender, district }
+
 class Controller extends GetxController {
+  String? selected;
+  int? ageSelected;
+  String? districtSelected;
+  List<int> ageList = List.generate(27, (index) => 18 + index);
+  // var httpClient = http.Client();
   List<CarModel> totalCars = [];
+
+  List<String> districts = [
+    "Kasargod",
+    "Kannur",
+    "Wayanad",
+    "Kozhikode",
+    "Malappuram",
+    "Palakkad",
+    "Thrissur",
+    "Ernakulam",
+    "Idukki",
+    "Kottayam",
+    "Alappuzha",
+    "Pathanamthitta",
+    "Kollam",
+    "Trivandrum",
+  ];
+
   var loading = true.obs;
-  Future<List<CarModel>> getData(String url) async {
+  List<String> listType = [
+    'Male',
+    'Female',
+    'Other',
+  ];
+  void setSelected(String value, String checkingKey) {
+    if (checkingKey == "age") {
+      ageSelected = int.parse(value);
+    } else if (checkingKey == "gender") {
+      selected = value;
+    } else if (checkingKey == "district") {
+      districtSelected = value;
+    }
+
+    update();
+  }
+
+  Future<List<CarModel>> getData(String url, String key) async {
     loading.value = true;
     try {
-      var data = await ApiServices().getService(url);
+      var data = await CarServices.getCarData(url, key);
       loading.value = false;
       return data!;
     } catch (e) {
@@ -17,10 +60,11 @@ class Controller extends GetxController {
       return [];
     }
   }
+
   @override
   void onInit() {
-     getData(urls[0]).then((value) => totalCars = value);
+    getData("/getcarData", "data").then((value) => totalCars = value);
+
     super.onInit();
   }
-  
 }

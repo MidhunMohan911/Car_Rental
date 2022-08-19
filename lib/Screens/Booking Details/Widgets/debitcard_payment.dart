@@ -18,17 +18,17 @@ class DebitCardPayment extends StatelessWidget {
         content: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextFormPage(title: 'Name'),
+            TextFormPage(title: 'Name',obscuretext: false,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SizedBox(
                   width: width * .32,
-                  child: TextFormPage(title: 'Expires'),
+                  child: TextFormPage(title: 'Expires',obscuretext: false,),
                 ),
                 SizedBox(
                   width: width * .32,
-                  child: TextFormPage(title: 'Security'),
+                  child: TextFormPage(title: 'Security',obscuretext: false,),
                 )
               ],
             ),
@@ -41,20 +41,20 @@ class DebitCardPayment extends StatelessWidget {
               children: [
                 SizedBox(
                   width: width * .32,
-                  child: TextFormPage(title: 'First Name'),
+                  child: TextFormPage(title: 'First Name',obscuretext: false,),
                 ),
                 SizedBox(
                   width: width * .32,
-                  child: TextFormPage(title: 'Last Name'),
+                  child: TextFormPage(title: 'Last Name',obscuretext: false,),
                 )
               ],
             ),
-            TextFormPage(title: 'Address line1'),
-            TextFormPage(title: 'Address line2'),
-            TextFormPage(title: 'Town/City'),
-            TextFormPage(title: 'Country'),
-            TextFormPage(title: 'Mobile'),
-            TextFormPage(title: 'Email'),
+            TextFormPage(title: 'Address line1',obscuretext: false,),
+            TextFormPage(title: 'Address line2',obscuretext: false,),
+            TextFormPage(title: 'Town/City',obscuretext: false,),
+            TextFormPage(title: 'Country',obscuretext: false,),
+            TextFormPage(title: 'Mobile',obscuretext: false,),
+            TextFormPage(title: 'Email',obscuretext: false,),
             Center(
               child: ElevatedButton(
                 style: elvButtonStyle,

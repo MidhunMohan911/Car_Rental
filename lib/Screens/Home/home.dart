@@ -1,12 +1,13 @@
 import 'dart:io';
 
 import 'package:car_rental/API/Controller/controller.dart';
-import 'package:car_rental/API/Controller/search_controller.dart';
+import 'package:car_rental/API/Models/local_storage.dart';
+import 'package:car_rental/API/Services/search_service.dart';
+
 import 'package:car_rental/Screens/Car%20Details/car_details.dart';
 import 'package:car_rental/Screens/Chat/chat.dart';
 import 'package:car_rental/Screens/Home/widgets/card_home.dart';
 import 'package:car_rental/Screens/Home/widgets/home_widget.dart';
-import 'package:car_rental/core/base_data.dart';
 
 import 'package:car_rental/core/core.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -18,6 +19,9 @@ class HomeScreen extends StatelessWidget {
 
   int _current = 0;
   Controller controller = Get.put(Controller());
+
+  CarouselController carouselController = CarouselController();
+  TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +36,12 @@ class HomeScreen extends StatelessWidget {
       ),
       body: GetBuilder<Controller>(
         init: Controller(),
-        dispose: (state) => HomeScreen(),
         builder: (controller) => SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
               CarouselSlider(
+                carouselController: carouselController,
                 items: homeImages
                     .map((item) => Builder(builder: (context) => item))
                     .toList(),
@@ -105,84 +109,172 @@ class HomeScreen extends StatelessWidget {
                 style: mainHeading,
               ),
               sizedBox10,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Row(
-                    children: [
-                      SizedBox(
-                        height: 36,
-                        width: 100,
-                        child: TextField(
-                          decoration: InputDecoration(
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 10),
-                            hintText: 'search',
-                            enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15),
-                                borderSide: BorderSide(color: themeColor)),
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15),
-                                borderSide: BorderSide(color: themeColor)),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Row(
+                      children: [
+                        SizedBox(
+                          height: 36,
+                          width: 100,
+                          child: TextField(
+                            controller: searchController,
+                            decoration: InputDecoration(
+                              contentPadding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              hintText: 'search',
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                  borderSide: BorderSide(color: themeColor)),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                  borderSide: BorderSide(color: themeColor)),
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 5),
-                      ElevatedButton(
-                        style: elvButtonStyle,
-                        onPressed: () {
-                          SearchController().searchCars();
-                        },
-                        child: Text(
-                          'Search',
-                          style: TextStyle(color: kwhite, fontSize: 10),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Text('FILTER',
-                      style:
-                          TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
-                  const SizedBox(width: 20),
-                  const Text('SORT BY DISTRICT',
-                      style:
-                          TextStyle(fontSize: 12, fontWeight: FontWeight.w600))
-                ],
-              ),
-              sizedBox10,
-              GridView.builder(
-                shrinkWrap: true,
-                physics: const BouncingScrollPhysics(),
-                itemCount: controller.totalCars.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1 / 1.55,
-                ),
-                itemBuilder: (context, index) {
-                  final data = controller.totalCars[index];
+                        const SizedBox(width: 3),
+                        ElevatedButton(
+                          style: elvButtonStyle,
+                          onPressed: () {
+                            Search.searchCar(brand: searchController.text);
 
-                  return CardHomePage(
-                    image: data.imgUrl.toString(),
-                    amount: data.price.toString(),
-                    brand: data.brand.toString(),
-                    model: data.model.toString(),
-                    available: data.location.toString(),
-                    button: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        shape: const StadiumBorder(),
-                        side: BorderSide(width: 2, color: kwhite),
+                            controller
+                                .getData("/search", "data")
+                                .then((value) => controller.totalCars = value);
+                          },
+                          child: Text(
+                            'Search',
+                            style: TextStyle(color: kwhite, fontSize: 10),
+                          ),
+                        ),
+                      ],
+                    ),
+                    TextButton(
+                      child: const Text(
+                        'FILTER',
+                        style: TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.w600),
                       ),
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) =>
-                              CarDetails(id: controller.totalCars[index]),
-                        ));
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            content: SizedBox(
+                              height: 100,
+                              child: Column(
+                                children: [
+                                  TextButton(
+                                      onPressed: () {
+                                        controller
+                                            .getData("/lowtohigh", "sort")
+                                            .then((value) =>
+                                                controller.totalCars = value);
+                                        Get.back();
+                                      },
+                                      child: const Text('Low to High')),
+                                  TextButton(
+                                      onPressed: () {
+                                        controller
+                                            .getData("/hightolow", "sorttwo")
+                                            .then((value) =>
+                                                controller.totalCars = value);
+                                        Get.back();
+                                      },
+                                      child: const Text('High to Low')),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
                       },
-                      child: Text(
-                        'BOOK',
-                        style: TextStyle(color: kwhite),
-                      ),
                     ),
+                    // const SizedBox(width: 10),
+                    GetBuilder<Controller>(builder: (controller) {
+                      return SizedBox(
+                        width: 130,
+                        child: DropdownButton<String>(
+                          hint: const Text(
+                            "SORT BY DISTRICT",
+                            style: TextStyle(color: Colors.black, fontSize: 12),
+                          ),
+                          value: controller.districtSelected,
+                          style: const TextStyle(
+                            color: Colors.black,
+                          ),
+                          isDense: true,
+                          isExpanded: true,
+                          onChanged: (newValue) {
+                            controller.setSelected(
+                              newValue!,
+                              "SORT BY DISTRICT",
+                            );
+                          },
+                          items: controller.districts
+                              .map<DropdownMenuItem<String>>((value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Text(
+                                  value,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      );
+                    }),
+                  ],
+                ),
+              ),
+              sizedBox10,
+              Obx(
+                () {
+                  if (controller.loading.value) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+
+                  return GridView.builder(
+                    shrinkWrap: true,
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: controller.totalCars.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 1 / 1.55,
+                    ),
+                    itemBuilder: (context, index) {
+                      final data = controller.totalCars[index];
+
+                      return CardHomePage(
+                        image: data.imgUrl.toString(),
+                        amount: data.price.toString(),
+                        brand: data.brand.toString(),
+                        model: data.model.toString(),
+                        available: data.location.toString(),
+                        button: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            shape: const StadiumBorder(),
+                            side: BorderSide(width: 2, color: kwhite),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) =>
+                                  CarDetails(id: controller.totalCars[index]),
+                            ));
+                          },
+                          child: Text(
+                            'BOOK',
+                            style: TextStyle(color: kwhite),
+                          ),
+                        ),
+                      );
+                    },
                   );
                 },
               ),
@@ -245,9 +337,13 @@ class HomeScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromARGB(255, 21, 19, 135),
-        onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => const ChatPage(),
-        )),
+        onPressed: () {
+         // print(GetLocalStorage.getUserIdAndToken("token"));
+
+            Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => const ChatPage(),
+          ));
+        },
         child: const Icon(Icons.chat_bubble),
       ),
     );

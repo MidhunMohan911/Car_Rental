@@ -4,49 +4,67 @@
 
 import 'dart:convert';
 
-ProfileModel profileModelFromJson(String str) => ProfileModel.fromJson(json.decode(str));
+// class UserProfileModel {
+//   UserProfileModel({
+//     required this.data,
+//   });
+
+//   List<ProfileModel> data;
+
+//   factory UserProfileModel.fromJson(
+//     Map<String, dynamic> json,
+//     String key,
+//   ) {
+//     return UserProfileModel(
+//       data: List<ProfileModel>.from(
+//           json[key].map((x) => ProfileModel.fromJson(x))),
+//     );
+//   }
+
+//   Map<String, dynamic> toJson() => {
+//         "user": List<dynamic>.from(data.map((x) => x.toJson())),
+//       };
+// }
+
+ProfileModel profileModelFromJson(String str) =>
+    ProfileModel.fromJson(json.decode(str));
 
 String profileModelToJson(ProfileModel data) => json.encode(data.toJson());
 
 class ProfileModel {
-    ProfileModel({
-        this.id,
-       required this.name,
-       required this.email,
-       required this.phone,
-       required this.age,
-       required this.gender,
-       required this.address,
-       required this.district,
-       required this.isBlock,
-        this.token,
-    });
+  ProfileModel({
+    this.id,
+     this.name,
+     this.email,
+     this.phone,
+     this.age,
+     this.gender,
+     this.address,
+     this.district,
+     this.password,
+  });
+  String? id;
+  String? name;
+  String? email;
+  int? phone;
+  int? age;
+  String? gender;
+  String? address;
+  String? district;
+  String? password;
 
-    String? id;
-    String name;
-    String email;
-    int phone;
-    int age;
-    String gender;
-    String address;
-    String district;
-    bool isBlock;
-    String? token;
+  factory ProfileModel.fromJson(Map<String, dynamic> json) => ProfileModel(
+      id: json["_id"],
+      name: json["name"],
+      email: json["email"],
+      phone: json["phone"],
+      age: json["age"],
+      gender: json["gender"],
+      address: json["address"],
+      district: json["district"],
+      password: json["password"]);
 
-    factory ProfileModel.fromJson(Map<String, dynamic> json) => ProfileModel(
-        id: json["_id"],
-        name: json["name"],
-        email: json["email"],
-        phone: json["phone"],
-        age: json["age"],
-        gender: json["gender"],
-        address: json["address"],
-        district: json["district"],
-        isBlock: json["isBlock"],
-        token: json["Token"],
-    );
-
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "_id": id,
         "name": name,
         "email": email,
@@ -55,7 +73,6 @@ class ProfileModel {
         "gender": gender,
         "address": address,
         "district": district,
-        "isBlock": isBlock,
-        "Token": token,
-    };
+        "password": password,
+      };
 }
