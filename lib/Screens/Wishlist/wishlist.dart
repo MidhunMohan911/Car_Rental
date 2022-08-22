@@ -1,47 +1,61 @@
-import 'package:car_rental/API/Controller/wishlist_controller.dart';
+
+import 'package:car_rental/API/Models/wishlist_model.dart';
+import 'package:car_rental/API/Services/wishlist.dart';
 import 'package:car_rental/core/core.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+
+
+import '../../API/Models/local_storage.dart';
 
 class WishlistPage extends StatelessWidget {
   const WishlistPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-      WishlistController controller = Get.put(WishlistController());
+    String? userId = GetLocalStorage.getUserIdAndToken("uId");
 
     return Scaffold(
       appBar: AppBar(
         title: appBarTitle(),
         actions: [appBarPopUp(context)],
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            sizedBox15,
-            const Text(
-              'Wishlist',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
-            ),
-            sizedBox15,
-            Wrap(
-              children: [
-                WishlistCard(
-                    image:
-                        'https://firebasestorage.googleapis.com/v0/b/car-rental-booking-a5524.appspot.com/o/carImages%2Famg-gt-exterior-right-front-three-quarter-60800.webp?alt=media&token=00eb7e8b-b005-4dcc-90de-a8f7466dc238',
-                    text:
-                     'Mercedes-Benz AMG GT'),
-                WishlistCard(
-                    image:
-                        'https://firebasestorage.googleapis.com/v0/b/car-rental-booking-a5524.appspot.com/o/carImages%2Fmini.webp?alt=media&token=3047bebc-d2c3-417d-bcae-07cffa81d878',
-                    text: 'MINI Cooper Convertible'),
-              ],
-            )
-          ],
-        ),
-      ),
+      body: FutureBuilder<List<WishlistModel>?>(
+          future: WishlistServices.getDataFromWishlist(
+            userId: userId!,
+          ),
+          builder: (context, AsyncSnapshot<List<WishlistModel>?> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            List<WishlistModel>? wishlistData = snapshot.data;
+
+            if (wishlistData == null) {
+              return const Center(
+                child: Text("Something went wrong"),
+              );
+            }
+
+            return GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
+                childAspectRatio: 3 / 3.4,
+              ),
+              itemCount: wishlistData.length,
+              itemBuilder: (context, index) {
+                var data = wishlistData[index];
+
+                return WishlistCard(
+                  image: data.imgUrl,
+                  text: data.brand + data.model,
+                );
+              },
+            );
+          }),
     );
   }
 }

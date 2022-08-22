@@ -1,5 +1,5 @@
-
 import 'package:car_rental/API/Models/car_model.dart';
+import 'package:car_rental/API/Models/profile_model.dart';
 import 'package:car_rental/API/Services/car_services.dart';
 import 'package:get/get.dart';
 
@@ -11,7 +11,7 @@ class Controller extends GetxController {
   String? districtSelected;
   List<int> ageList = List.generate(27, (index) => 18 + index);
   // var httpClient = http.Client();
-  List<CarModel> totalCars = [];
+  RxList<CarModel> totalCars = <CarModel>[].obs;
 
   List<String> districts = [
     "Kasargod",
@@ -48,10 +48,20 @@ class Controller extends GetxController {
     update();
   }
 
-  Future<List<CarModel>> getData(String url, String key) async {
+  Future<List<CarModel>> getData(
+    String url,
+    String key, {
+    bool isSearch = false,
+    String? brand,
+  }) async {
     loading.value = true;
     try {
-      var data = await CarServices.getCarData(url, key);
+      var data = await CarServices.getCarData(
+        url,
+        key,
+        isSearch: isSearch,
+        brand: brand,
+      );
       loading.value = false;
       return data!;
     } catch (e) {
@@ -63,7 +73,7 @@ class Controller extends GetxController {
 
   @override
   void onInit() {
-    getData("/getcarData", "data").then((value) => totalCars = value);
+    getData("/getcarData", "data").then((value) => totalCars.value = value);
 
     super.onInit();
   }

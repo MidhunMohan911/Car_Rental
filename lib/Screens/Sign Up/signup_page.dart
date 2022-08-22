@@ -193,22 +193,6 @@ class SignUpPage extends StatelessWidget {
                                       ),
                                     );
                                   }),
-
-                                  // SizedBox(
-                                  //     width: width * .22,
-                                  //     child: TextFormPage(
-                                  //       title: 'Age',
-                                  //       controller: ageController,
-                                  //       validator: (value) {
-                                  //         if (value == null || value.isEmpty) {
-                                  //           return 'enter age';
-                                  //         } else if (int.parse(value) < 17 ||
-                                  //             int.parse(value) > 45) {
-                                  //           return 'please enter b/w 18-45';
-                                  //         }
-                                  //         return null;
-                                  //       },
-                                  //     )),
                                   Container(
                                     decoration: BoxDecoration(
                                         color: Colors.white,

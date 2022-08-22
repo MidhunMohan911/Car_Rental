@@ -6,8 +6,9 @@ class Search {
   static Future searchCar({required String brand}) async {
     try {
       var response = await dio.post('/search', data: {"searchText": brand});
+      print('kkkkk');
 
-      print(response);
+      print(response.data);
     } on DioError catch (e) {
       print(e.message);
     }

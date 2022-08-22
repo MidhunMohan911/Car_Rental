@@ -14,7 +14,7 @@ class CarDetails extends StatelessWidget {
   CarDetails({Key? key, required this.id}) : super(key: key);
 
   Controller controller = Get.find<Controller>();
-  DateTime date = DateTime(2022, 08, 18);
+  DateTime date = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -154,10 +154,11 @@ class CarDetails extends StatelessWidget {
                                 return GestureDetector(
                                   onTap: () async {
                                     DateTime? newDate = await showDatePicker(
-                                        context: context,
-                                        initialDate: date,
-                                        firstDate: DateTime.now(),
-                                        lastDate: DateTime(2023));
+                                      context: context,
+                                      firstDate: DateTime.now(),
+                                      lastDate: DateTime(2023),
+                                      initialDate: date,
+                                    );
                                     if (newDate == null) {
                                       return;
                                     }
@@ -214,11 +215,8 @@ class CarDetails extends StatelessWidget {
                         onPressed: () {
                           String? userId =
                               GetLocalStorage.getUserIdAndToken("uId");
-
-                          print(WishlistServices.addWishlist(
-                              userId: userId!, carId: id.id));
-                          print(WishlistServices.getDataFromWishlist(
-                              userId: userId));
+                          WishlistServices.addWishlist(
+                              userId: userId!, carId: id.id);
                         },
                       )
                     ],

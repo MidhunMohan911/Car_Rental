@@ -1,10 +1,10 @@
 import 'package:car_rental/API/Controller/profile_controller.dart';
 import 'package:car_rental/API/Models/local_storage.dart';
 import 'package:car_rental/API/Models/profile_model.dart';
+import 'package:car_rental/Screens/Profile/edit_profile.dart';
 import 'package:car_rental/core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -72,7 +72,9 @@ class ProfilePage extends StatelessWidget {
                           shape: const StadiumBorder(),
                           side: BorderSide(width: 2, color: themeColor),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Get.to(EditProfilePage(userDetails: userData,));
+                        },
                         child: Text(
                           'Edit',
                           style: TextStyle(color: themeColor),

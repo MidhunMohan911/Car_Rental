@@ -138,11 +138,13 @@ class HomeScreen extends StatelessWidget {
                         ElevatedButton(
                           style: elvButtonStyle,
                           onPressed: () {
-                            Search.searchCar(brand: searchController.text);
+                            // Search.searchCar(brand: searchController.text);
 
                             controller
-                                .getData("/search", "data")
-                                .then((value) => controller.totalCars = value);
+                                .getData("/search", "data",
+                                    isSearch: true,
+                                    brand: searchController.text)
+                                .then((value) => controller.totalCars.value = value);
                           },
                           child: Text(
                             'Search',
@@ -170,7 +172,7 @@ class HomeScreen extends StatelessWidget {
                                         controller
                                             .getData("/lowtohigh", "sort")
                                             .then((value) =>
-                                                controller.totalCars = value);
+                                                controller.totalCars.value = value);
                                         Get.back();
                                       },
                                       child: const Text('Low to High')),
@@ -179,7 +181,7 @@ class HomeScreen extends StatelessWidget {
                                         controller
                                             .getData("/hightolow", "sorttwo")
                                             .then((value) =>
-                                                controller.totalCars = value);
+                                                controller.totalCars.value = value);
                                         Get.back();
                                       },
                                       child: const Text('High to Low')),
@@ -239,6 +241,12 @@ class HomeScreen extends StatelessWidget {
                     );
                   }
 
+                  if (controller.totalCars.isEmpty) {
+                    return Center(
+                      child: Text("Data not found"),
+                    );
+                  }
+
                   return GridView.builder(
                     shrinkWrap: true,
                     physics: const BouncingScrollPhysics(),
@@ -278,12 +286,12 @@ class HomeScreen extends StatelessWidget {
                   );
                 },
               ),
-              sizedBox10,
-              ElevatedButton(
-                style: elvButtonStyle,
-                onPressed: () {},
-                child: const Text('LOAD MORE▼'),
-              ),
+              // sizedBox10,
+              // ElevatedButton(
+              //   style: elvButtonStyle,
+              //   onPressed: () {},
+              //   child: const Text('LOAD MORE▼'),
+              // ),
               sizedBox15,
               Container(
                 width: double.infinity,
@@ -338,9 +346,9 @@ class HomeScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromARGB(255, 21, 19, 135),
         onPressed: () {
-         // print(GetLocalStorage.getUserIdAndToken("token"));
+          // print(GetLocalStorage.getUserIdAndToken("token"));
 
-            Navigator.of(context).push(MaterialPageRoute(
+          Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => const ChatPage(),
           ));
         },

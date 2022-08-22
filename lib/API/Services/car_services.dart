@@ -1,18 +1,24 @@
-
 import 'package:car_rental/API/Models/car_model.dart';
 import 'package:car_rental/API/Services/dio_client.dart';
 import 'package:dio/dio.dart';
 
 class CarServices {
   static Dio dio = DioClient.dio;
-  
-  
 
   //create Get function
-  static Future<List<CarModel>?> getCarData(String url, String key) async {
+  static Future<List<CarModel>?> getCarData(
+    String url,
+    String key, {
+    bool isSearch = false,
+    String? brand,
+  }) async {
     //check condition
     try {
-      var response = await dio.get(url);
+      var response = isSearch
+          ? await dio.post(url, data: {
+              "searchText": brand,
+            })
+          : await dio.get(url);
       // Json decode
 
       TotalCarsModel totalCarsModel =
