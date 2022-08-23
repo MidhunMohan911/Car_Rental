@@ -1,10 +1,16 @@
+import 'dart:convert';
 
+import 'package:car_rental/API/Controller/wishlist_controller.dart';
+import 'package:car_rental/API/Models/car_model.dart';
 import 'package:car_rental/API/Models/wishlist_model.dart';
-import 'package:car_rental/API/Services/wishlist.dart';
+import 'package:car_rental/API/Services/car_services.dart';
+import 'package:car_rental/API/Services/wishlist_services.dart';
+import 'package:car_rental/Screens/Car%20Details/car_details.dart';
 import 'package:car_rental/core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-
+import '../../API/Controller/controller.dart';
 import '../../API/Models/local_storage.dart';
 
 class WishlistPage extends StatelessWidget {
@@ -13,6 +19,7 @@ class WishlistPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String? userId = GetLocalStorage.getUserIdAndToken("uId");
+    WishlistController controller = Get.put(WishlistController());
 
     return Scaffold(
       appBar: AppBar(
@@ -38,36 +45,86 @@ class WishlistPage extends StatelessWidget {
               );
             }
 
-            return GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
-                childAspectRatio: 3 / 3.4,
-              ),
-              itemCount: wishlistData.length,
-              itemBuilder: (context, index) {
-                var data = wishlistData[index];
+            return GetBuilder<WishlistController>(
+                init: WishlistController(),
+                builder: (controller) {
+                  return GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 10,
+                      childAspectRatio: 3 / 3.5,
+                    ),
+                    itemCount: wishlistData.length,
+                    itemBuilder: (context, index) {
+                      var data = wishlistData[index];
+                      //  final carData = controller.totalCars[index];
 
-                return WishlistCard(
-                  image: data.imgUrl,
-                  text: data.brand + data.model,
-                );
-              },
-            );
+                      return WishlistCard(
+                        image: data.imgUrl!,
+                        text: data.brand! + data.model!,
+                        elevatedButton: ElevatedButton(
+                          style: elvButtonStyle,
+                          onPressed: () {
+                            String? userId =
+                                GetLocalStorage.getUserIdAndToken("uId");
+                            // WishlistServices.removeWishlist(
+                            //     carId: data.id!, userId: userId!);
+                            controller.removeWishlistData(data.id!, userId!);
+                            Get.snackbar('Message', 'Deleted Successfully',
+                                snackPosition: SnackPosition.BOTTOM);
+                          },
+                          child: const Text(
+                            'REMOVE',
+                            style: TextStyle(fontSize: 11),
+                          ),
+                        ),
+                        outlinedButton: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 3,
+                            ),
+                            shape: const StadiumBorder(),
+                            side: BorderSide(width: 2, color: themeColor),
+                          ),
+                          onPressed: () {
+                            Future<String> bbb =
+                                CarServices.getSingleCar(carId: data.id!);
+                            print('hhjhjjh');
+                            String carDetails = '';
+                            bbb.then((value) => carDetails = value);
+                            var carDetail = jsonDecode(carDetails);
+                            print('jhjjhjhjhh' + carDetail);
+                            var car = CarModel.fromJson(carDetail);
+                            print(car);
+                          },
+                          child: Text(
+                            'VIEW CAR',
+                            style: TextStyle(color: themeColor, fontSize: 11),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                });
           }),
     );
   }
 }
 
 class WishlistCard extends StatelessWidget {
-  WishlistCard({
-    Key? key,
-    required this.image,
-    required this.text,
-  }) : super(key: key);
+  WishlistCard(
+      {Key? key,
+      required this.image,
+      required this.text,
+      required this.elevatedButton,
+      required this.outlinedButton})
+      : super(key: key);
   String image;
   String text;
+  ElevatedButton elevatedButton;
+  OutlinedButton outlinedButton;
 
   @override
   Widget build(BuildContext context) {
@@ -91,34 +148,11 @@ class WishlistCard extends StatelessWidget {
                 sizedBox10,
                 Text(
                   text,
-                  style: TextStyle(fontWeight: FontWeight.w600),
+                  style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 3,
-                        ),
-                        shape: const StadiumBorder(),
-                        side: BorderSide(width: 2, color: themeColor),
-                      ),
-                      onPressed: () {},
-                      child: Text(
-                        'VIEW CAR',
-                        style: TextStyle(color: themeColor, fontSize: 11),
-                      ),
-                    ),
-                    ElevatedButton(
-                      style: elvButtonStyle,
-                      onPressed: () {},
-                      child: const Text(
-                        'REMOVE',
-                        style: TextStyle(fontSize: 11),
-                      ),
-                    )
-                  ],
+                  children: [outlinedButton, elevatedButton],
                 )
               ],
             ),

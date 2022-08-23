@@ -10,16 +10,16 @@ String wishlistModelToJson(List<WishlistModel> data) => json.encode(List<dynamic
 
 class WishlistModel {
     WishlistModel({
-        required this.id,
-        required this.brand,
-        required this.model,
-        required this.imgUrl,
+         this.id,
+         this.brand,
+         this.model,
+         this.imgUrl,
     });
 
-    String id;
-    String brand;
-    String model;
-    String imgUrl;
+    String? id;
+    String? brand;
+    String? model;
+    String? imgUrl;
 
     factory WishlistModel.fromJson(Map<String, dynamic> json) => WishlistModel(
         id: json["_id"],

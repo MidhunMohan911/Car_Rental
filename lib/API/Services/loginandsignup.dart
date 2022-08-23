@@ -1,9 +1,12 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 
 import 'package:car_rental/API/Models/local_storage.dart';
 import 'package:car_rental/API/Models/profile_model.dart';
 import 'package:car_rental/API/Services/dio_client.dart';
 import 'package:car_rental/Screens/Home/home.dart';
+import 'package:car_rental/Screens/Log%20in/log_in.dart';
 import 'package:car_rental/core/core.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
@@ -22,10 +25,10 @@ class UserAuthService {
       Map<String, String> user = {
         "uId": response.data['_id'],
         "token": response.data['token'],
-       
       };
 
       GetLocalStorage.saveToken(user);
+      print(response.data);
       Get.offAll(HomeScreen());
     } on DioError catch (e) {
       print(e.message);
@@ -65,23 +68,24 @@ class UserAuthService {
       );
 
       Map<String, String> user = {
-        "uId": response.data['_id'],
+        "uId": response.data['user'],
         "token": response.data['token'],
-       
       };
-
+      print('ppppp');
       GetLocalStorage.saveToken(user);
       print("lafl");
-      Get.offAll(HomeScreen());
+
       print("Success response");
       print(response.data);
     } on DioError catch (e) {
+      print('errrrrorrr');
       print(e.response?.statusMessage);
       print(e.error);
       print(e.message);
     } catch (e) {
       print("inside catch");
       print(e);
+      return '';
     }
   }
 }

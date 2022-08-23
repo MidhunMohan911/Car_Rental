@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:car_rental/API/Controller/controller.dart';
 import 'package:car_rental/API/Models/car_model.dart';
 import 'package:car_rental/API/Models/local_storage.dart';
-import 'package:car_rental/API/Services/wishlist.dart';
+import 'package:car_rental/API/Models/wishlist_model.dart';
+import 'package:car_rental/API/Services/wishlist_services.dart';
 import 'package:car_rental/Screens/Booking%20Details/booking_details.dart';
 import 'package:car_rental/Screens/Location/location.dart';
 import 'package:car_rental/core/core.dart';
@@ -209,16 +212,38 @@ class CarDetails extends StatelessWidget {
                             style: TextStyle(color: Colors.blue, fontSize: 11)),
                       ),
                       const SizedBox(width: 10),
-                      TextButton(
-                        child: const Text('ADD TO WISHLIST',
-                            style: TextStyle(color: Colors.blue)),
-                        onPressed: () {
-                          String? userId =
-                              GetLocalStorage.getUserIdAndToken("uId");
-                          WishlistServices.addWishlist(
-                              userId: userId!, carId: id.id);
-                        },
-                      )
+                      GetBuilder<Controller>(
+                          init: Controller(),
+                          builder: (controller) {
+                            List<WishlistModel> wishList = [];
+                            String? userId =
+                                GetLocalStorage.getUserIdAndToken("uId");
+                            var wishlistModel =
+                                WishlistServices.getDataFromWishlist(
+                                    userId: userId!);
+                            wishlistModel.then((value) => wishList = value!);
+                            bool isNotAdded = wishList
+                                .where(
+                                    (element) => element.id.toString() == id.id)
+                                .isEmpty;
+                            print(isNotAdded);
+
+                            return isNotAdded
+                                ? TextButton(
+                                    child: const Text('ADD TO WISHLIST',
+                                        style: TextStyle(color: Colors.blue)),
+                                    onPressed: () {
+                                      String? userId =
+                                          GetLocalStorage.getUserIdAndToken(
+                                              "uId");
+                                      WishlistServices.addWishlist(
+                                          userId: userId!, carId: id.id);
+                                    },
+                                  )
+                                : TextButton(
+                                    onPressed: () {},
+                                    child: const Text('REMOVE FROM WISHLIST'));
+                          })
                     ],
                   ),
                   Wrap(

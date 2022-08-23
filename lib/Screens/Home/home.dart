@@ -144,7 +144,8 @@ class HomeScreen extends StatelessWidget {
                                 .getData("/search", "data",
                                     isSearch: true,
                                     brand: searchController.text)
-                                .then((value) => controller.totalCars.value = value);
+                                .then((value) =>
+                                    controller.totalCars.value = value);
                           },
                           child: Text(
                             'Search',
@@ -171,8 +172,8 @@ class HomeScreen extends StatelessWidget {
                                       onPressed: () {
                                         controller
                                             .getData("/lowtohigh", "sort")
-                                            .then((value) =>
-                                                controller.totalCars.value = value);
+                                            .then((value) => controller
+                                                .totalCars.value = value);
                                         Get.back();
                                       },
                                       child: const Text('Low to High')),
@@ -180,8 +181,8 @@ class HomeScreen extends StatelessWidget {
                                       onPressed: () {
                                         controller
                                             .getData("/hightolow", "sorttwo")
-                                            .then((value) =>
-                                                controller.totalCars.value = value);
+                                            .then((value) => controller
+                                                .totalCars.value = value);
                                         Get.back();
                                       },
                                       child: const Text('High to Low')),
@@ -208,6 +209,7 @@ class HomeScreen extends StatelessWidget {
                           isDense: true,
                           isExpanded: true,
                           onChanged: (newValue) {
+                            
                             controller.setSelected(
                               newValue!,
                               "SORT BY DISTRICT",
@@ -242,7 +244,7 @@ class HomeScreen extends StatelessWidget {
                   }
 
                   if (controller.totalCars.isEmpty) {
-                    return Center(
+                    return const Center(
                       child: Text("Data not found"),
                     );
                   }
@@ -271,10 +273,7 @@ class HomeScreen extends StatelessWidget {
                             side: BorderSide(width: 2, color: kwhite),
                           ),
                           onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) =>
-                                  CarDetails(id: controller.totalCars[index]),
-                            ));
+                            Get.to(CarDetails(id: data));
                           },
                           child: Text(
                             'BOOK',

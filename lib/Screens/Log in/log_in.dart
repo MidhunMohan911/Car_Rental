@@ -184,64 +184,7 @@ class LoginPage extends StatelessWidget {
   //----------Login with OTP---------//
 }
 
-// class LoginWithOtp extends StatelessWidget {
-//   const LoginWithOtp({
-//     Key? key,
-//     required GlobalKey<FormState> formKey,
-//   })  : _formKey = formKey,
-//         super(key: key);
 
-//   final GlobalKey<FormState> _formKey;
-
-//   @override
-//   Widget build(BuildContext context) => AlertDialog(
-//         backgroundColor: const Color.fromARGB(255, 241, 237, 237),
-//         content: Form(
-//             key: _formKey,
-//             child: Column(
-//               mainAxisSize: MainAxisSize.min,
-//               crossAxisAlignment: CrossAxisAlignment.center,
-//               children: [
-//                 const Text(
-//                   'Enter your Mobile Number',
-//                   style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
-//                 ),
-//                 sizedBox15,
-//                 TextFormField(
-//                   maxLines: 1,
-//                   keyboardType: TextInputType.phone,
-//                   style: const TextStyle(color: Colors.black),
-//                   decoration: const InputDecoration(
-//                       enabledBorder: OutlineInputBorder(
-//                         borderSide: BorderSide(
-//                           color: Colors.black,
-//                         ),
-//                       ),
-//                       focusedBorder: OutlineInputBorder(
-//                         borderSide: BorderSide(
-//                           color: Colors.black,
-//                         ),
-//                       ),
-//                       hintText: 'Mobile Number',
-//                       hintStyle: TextStyle(color: Colors.black)),
-//                 ),
-//                 ElevatedButton(
-//                   onPressed: () {
-//                     showDialog(
-//                         context: context,
-//                         builder: (context) => OtpNumber(formKey: _formKey));
-//                   },
-//                   style: ElevatedButton.styleFrom(
-//                     shape: RoundedRectangleBorder(
-//                       borderRadius: BorderRadius.circular(5),
-//                     ),
-//                   ),
-//                   child: const Text("CONFIRM"),
-//                 )
-//               ],
-//             )),
-//       );
-// }
 
 class OtpNumber extends StatelessWidget {
   const OtpNumber({

@@ -367,6 +367,7 @@ class SignUpPage extends StatelessWidget {
 
                                             UserAuthService.signUpUser(
                                                 profileModel);
+                                            Get.to(LoginPage());
                                           }
                                         },
                                         child: const Text('SIGN UP ➲')),

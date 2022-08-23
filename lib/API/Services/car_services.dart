@@ -32,4 +32,16 @@ class CarServices {
       return null;
     }
   }
+
+  static Future<String> getSingleCar({required String carId}) async {
+    try {
+      var response = await dio.post('/GetSingleCar/$carId');
+      print(response.data);
+      return response.data;
+    } on DioError catch (e) {
+      print(e.error);
+      print(e.response!.statusMessage);
+      return '';
+    }
+  }
 }
