@@ -45,6 +45,11 @@ ButtonStyle elvButtonStyle = ButtonStyle(
     backgroundColor:
         MaterialStateProperty.all(const Color.fromARGB(255, 36, 36, 36)));
 
+        ButtonStyle elvButtonStyleWhite = ButtonStyle(
+    shape: MaterialStateProperty.all(const StadiumBorder()),
+    backgroundColor:
+        MaterialStateProperty.all(kwhite));
+
 //----------AppBar Methods ---------//
 
 PopupMenuButton<String> appBarPopUp(BuildContext context) {

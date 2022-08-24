@@ -1,8 +1,8 @@
+// ignore_for_file: avoid_print
+
 import 'package:car_rental/API/Controller/profile_controller.dart';
-import 'package:car_rental/API/Models/local_storage.dart';
 import 'package:car_rental/API/Models/profile_model.dart';
-import 'package:car_rental/API/Services/loginandsignup.dart';
-import 'package:car_rental/API/Services/profile_services.dart';
+
 import 'package:car_rental/core/core.dart';
 import 'package:flutter/material.dart';
 
@@ -24,7 +24,7 @@ class EditProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserProfileController userProfileController =
-        Get.put(UserProfileController());
+        Get.find<UserProfileController>();
     return Scaffold(
         appBar: AppBar(
           title: const Text('EditProfile',
@@ -34,7 +34,7 @@ class EditProfilePage extends StatelessWidget {
         ),
         body: Obx(() {
           ProfileModel? userData = userProfileController.profileModel.value;
-          if (userData!.name == null) {
+          if (userData == null) {
             return const Center(
               child: CircularProgressIndicator(),
             );
@@ -181,28 +181,33 @@ class EditProfilePage extends StatelessWidget {
                           address: addressController.text,
                           district: districtController.text,
                         );
-                        UserProfileService.updateUserProfile(profileModel);
+                        // UserProfileService.updateUserProfile(profileModel);
+                        contrlrr.updateUserData(profileModel);
+                        contrlrr.getUserData();
 
-                        UserProfileService.getUserProfileData();
+                        // UserProfileService.getUserProfileData();
                         print('mmmmmm');
-                        print(profileModel.name);
-                        // bool? isValid = formKey.currentState!.validate();
-                        // print(isValid);
 
-                        // if (isValid) {
-                        //   final ProfileModel profileModel = ProfileModel(
-                        //     name: nameController.text,
-                        //     email: emailController.text,
-                        //     phone: int.parse(phoneController.text),
-                        //     age: int.parse(ageController.text),
-                        //     gender: genderController.text,
-                        //     address: addressController.text,
-                        //     district: districtController.text,
-                        //   );
-                        //   UserProfileService.updateUserProfile(profileModel);
-                        //   UserAuthService.signUpUser(profileModel);
-                        //   print(profileModel);
-                        // }
+                        bool? isValid = formKey.currentState!.validate();
+                        print(isValid);
+
+                        if (isValid) {
+                          final ProfileModel profileModel = ProfileModel(
+                            name: nameController.text,
+                            email: emailController.text,
+                            phone: int.parse(phoneController.text),
+                            age: int.parse(ageController.text),
+                            gender: genderController.text,
+                            address: addressController.text,
+                            district: districtController.text,
+                          );
+                          // UserProfileService.updateUserProfile(profileModel);
+                          // UserAuthService.signUpUser(profileModel);
+                          contrlrr.updateUserData(profileModel);
+                          contrlrr.getUserData();
+                          print(profileModel);
+                          print(profileModel.name);
+                        }
                       },
                       child: const Text('Submit'),
                     ),

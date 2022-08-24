@@ -16,10 +16,7 @@ class TotalCarsModel {
 
   List<CarModel> data;
 
-  factory TotalCarsModel.fromJson(
-    Map<String, dynamic> json,
-    String key,
-  ) {
+  factory TotalCarsModel.fromJson(Map<String, dynamic> json, String key) {
     return TotalCarsModel(
       data: List<CarModel>.from(json[key].map((x) => CarModel.fromJson(x))),
     );

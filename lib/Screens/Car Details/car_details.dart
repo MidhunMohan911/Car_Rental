@@ -21,6 +21,8 @@ class CarDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
+
     return Scaffold(
       appBar: AppBar(
         title: appBarTitle(),
@@ -238,6 +240,10 @@ class CarDetails extends StatelessWidget {
                                               "uId");
                                       WishlistServices.addWishlist(
                                           userId: userId!, carId: id.id);
+                                      Get.snackbar('Successfully Added',
+                                          '${id.brand + id.model} added to wishlist',
+                                          colorText: kwhite,
+                                          backgroundColor: Colors.black);
                                     },
                                   )
                                 : TextButton(

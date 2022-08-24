@@ -2,15 +2,21 @@ import 'package:car_rental/API/Controller/profile_controller.dart';
 import 'package:car_rental/API/Models/local_storage.dart';
 import 'package:car_rental/API/Models/profile_model.dart';
 import 'package:car_rental/Screens/Profile/edit_profile.dart';
+import 'package:car_rental/Screens/Sign%20Up/Widgets/textform.dart';
 import 'package:car_rental/core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../API/Services/profile_services.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
+    TextEditingController _passwordController = TextEditingController();
+    TextEditingController confirmPasswordController = TextEditingController();
     UserProfileController userProfileController =
         Get.put(UserProfileController());
 
@@ -28,6 +34,8 @@ class ProfilePage extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           }
+
+          print("obx called");
 
           return SingleChildScrollView(
               physics: const ClampingScrollPhysics(),
@@ -73,7 +81,9 @@ class ProfilePage extends StatelessWidget {
                           side: BorderSide(width: 2, color: themeColor),
                         ),
                         onPressed: () {
-                          Get.to(EditProfilePage(userDetails: userData,));
+                          Get.to(EditProfilePage(
+                            userDetails: userData,
+                          ));
                         },
                         child: Text(
                           'Edit',
@@ -83,7 +93,101 @@ class ProfilePage extends StatelessWidget {
                       ElevatedButton(
                         style: elvButtonStyle,
                         onPressed: () {
-                          print(GetLocalStorage.getUserIdAndToken("uId"));
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                backgroundColor: themeColor,
+                                content: SizedBox(
+                                  height: 250,
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        'Reset Your Password',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            color: kwhite,
+                                            fontSize: 20),
+                                      ),
+                                      sizedBox10,
+                                      TextFormPage(
+                                          title: 'Password',
+                                          controller: _passwordController,
+                                          obscuretext: true,
+                                          validator: (value) {
+                                            if (value!.isEmpty) {
+                                              return 'Please enter password';
+                                            } else if (value.length < 6) {
+                                              return 'please enter atleast 6 digit password';
+                                            }
+
+                                            return null;
+                                          }),
+                                      TextFormPage(
+                                        title: 'Confirm Password',
+                                        controller: confirmPasswordController,
+                                        obscuretext: true,
+                                        validator: (value) {
+                                          if (value!.isEmpty) {
+                                            return 'Please confirm password';
+                                          } else if (_passwordController.text !=
+                                              confirmPasswordController.text) {
+                                            return 'Password do not match';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                      sizedBox10,
+                                      ElevatedButton(
+                                          style: elvButtonStyleWhite,
+                                          onPressed: () {
+                                            String? userId = GetLocalStorage
+                                                .getUserIdAndToken("uId");
+                                            final ProfileModel profileModel =
+                                                ProfileModel(
+                                                    password:
+                                                        _passwordController
+                                                            .text);
+                                            print(profileModel.password);
+
+                                            UserProfileService.resetUserProfile(
+                                                profileModel,
+                                                _passwordController.text);
+
+                                            // bool? isValid = _formKey
+                                            //     .currentState!
+                                            //     .validate();
+                                            // print(isValid);
+
+                                            // if (isValid) {
+                                            //   String? userId = GetLocalStorage
+                                            //       .getUserIdAndToken("uId");
+                                            //   final ProfileModel profileModel =
+                                            //       ProfileModel(
+                                            //           password:
+                                            //               _passwordController
+                                            //                   .text);
+
+                                            //   UserProfileService
+                                            //       .resetUserProfile(
+                                            //           profileModel,
+                                            //           userId!,
+                                            //           _passwordController.text);
+                                            //}
+                                          },
+                                          child: const Text(
+                                            'Reset',
+                                            style:
+                                                TextStyle(color: Colors.black),
+                                          ))
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          );
                         },
                         child: const Text('Reset Password'),
                       )

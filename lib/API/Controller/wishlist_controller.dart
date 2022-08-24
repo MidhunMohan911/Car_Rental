@@ -6,5 +6,6 @@ class WishlistController extends GetxController {
     var data =
         await WishlistServices.removeWishlist(carId: carId, userId: userId);
     print(data);
+    update();
   }
 }

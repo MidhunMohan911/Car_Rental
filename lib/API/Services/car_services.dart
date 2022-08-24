@@ -6,12 +6,8 @@ class CarServices {
   static Dio dio = DioClient.dio;
 
   //create Get function
-  static Future<List<CarModel>?> getCarData(
-    String url,
-    String key, {
-    bool isSearch = false,
-    String? brand,
-  }) async {
+  static Future<List<CarModel>?> getCarData(String url, String key,
+      {bool isSearch = false, String? brand}) async {
     //check condition
     try {
       var response = isSearch

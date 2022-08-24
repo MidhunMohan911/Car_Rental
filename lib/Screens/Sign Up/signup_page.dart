@@ -157,7 +157,7 @@ class SignUpPage extends StatelessWidget {
                                               borderRadius:
                                                   BorderRadius.circular(5)),
                                           child: DropdownButton<int>(
-                                            hint: Text(
+                                            hint: const Text(
                                               "Age",
                                             ),
                                             value: controller.ageSelected,
@@ -290,8 +290,6 @@ class SignUpPage extends StatelessWidget {
                                   controller: passwordController,
                                   obscuretext: true,
                                   validator: (value) {
-                                    RegExp regex = RegExp(
-                                        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
                                     if (value!.isEmpty) {
                                       return 'Please enter password';
                                     } else if (value.length < 6) {
@@ -322,7 +320,9 @@ class SignUpPage extends StatelessWidget {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 15),
                                     child: ElevatedButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Get.back();
+                                      },
                                       child: const Text('✘ CLOSE'),
                                       style: ButtonStyle(
                                           backgroundColor:
