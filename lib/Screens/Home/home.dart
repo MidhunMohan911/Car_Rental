@@ -155,10 +155,12 @@ class HomeScreen extends StatelessWidget {
                       ],
                     ),
                     TextButton(
-                      child: const Text(
+                      child: Text(
                         'FILTER',
                         style: TextStyle(
-                            fontSize: 12, fontWeight: FontWeight.w600),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: themeColor),
                       ),
                       onPressed: () {
                         showDialog(
@@ -169,6 +171,11 @@ class HomeScreen extends StatelessWidget {
                               child: Column(
                                 children: [
                                   TextButton(
+                                      style: TextButton.styleFrom(
+                                          primary: themeColor,
+                                          textStyle: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600)),
                                       onPressed: () {
                                         controller
                                             .getData("/lowtohigh", "sort")
@@ -178,6 +185,11 @@ class HomeScreen extends StatelessWidget {
                                       },
                                       child: const Text('Low to High')),
                                   TextButton(
+                                      style: TextButton.styleFrom(
+                                          primary: themeColor,
+                                          textStyle: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600)),
                                       onPressed: () {
                                         controller
                                             .getData("/hightolow", "sorttwo")
@@ -209,11 +221,12 @@ class HomeScreen extends StatelessWidget {
                           isDense: true,
                           isExpanded: true,
                           onChanged: (newValue) {
-                            
                             controller.setSelected(
                               newValue!,
                               "SORT BY DISTRICT",
                             );
+                            controller.sortDistrictData(place: newValue).then(
+                                (value) => controller.totalCars.value = value);
                           },
                           items: controller.districts
                               .map<DropdownMenuItem<String>>((value) {

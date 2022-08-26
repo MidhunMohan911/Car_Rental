@@ -54,7 +54,7 @@ class UserProfileService {
         ),
       );
 
-      ProfileModel editedProfileMode = ProfileModel.fromJson(response.data);
+      ProfileModel? editedProfileMode = ProfileModel.fromJson(response.data);
 
       Get.snackbar('Success', response.data['message'],
           backgroundColor: kwhite);

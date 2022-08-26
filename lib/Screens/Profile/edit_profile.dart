@@ -27,7 +27,7 @@ class EditProfilePage extends StatelessWidget {
         Get.find<UserProfileController>();
     return Scaffold(
         appBar: AppBar(
-          title: const Text('EditProfile',
+          title: const Text('Edit Profile',
               style: TextStyle(fontWeight: FontWeight.w500, fontSize: 22)),
           centerTitle: true,
           elevation: 0,
@@ -188,26 +188,26 @@ class EditProfilePage extends StatelessWidget {
                         // UserProfileService.getUserProfileData();
                         print('mmmmmm');
 
-                        bool? isValid = formKey.currentState!.validate();
-                        print(isValid);
+                        // bool? isValid = formKey.currentState!.validate();
+                        // print(isValid);
 
-                        if (isValid) {
-                          final ProfileModel profileModel = ProfileModel(
-                            name: nameController.text,
-                            email: emailController.text,
-                            phone: int.parse(phoneController.text),
-                            age: int.parse(ageController.text),
-                            gender: genderController.text,
-                            address: addressController.text,
-                            district: districtController.text,
-                          );
-                          // UserProfileService.updateUserProfile(profileModel);
-                          // UserAuthService.signUpUser(profileModel);
-                          contrlrr.updateUserData(profileModel);
-                          contrlrr.getUserData();
-                          print(profileModel);
-                          print(profileModel.name);
-                        }
+                        // if (isValid) {
+                        //   final ProfileModel profileModel = ProfileModel(
+                        //     name: nameController.text,
+                        //     email: emailController.text,
+                        //     phone: int.parse(phoneController.text),
+                        //     age: int.parse(ageController.text),
+                        //     gender: genderController.text,
+                        //     address: addressController.text,
+                        //     district: districtController.text,
+                        //   );
+                        //   // UserProfileService.updateUserProfile(profileModel);
+                        //   // UserAuthService.signUpUser(profileModel);
+                        //   contrlrr.updateUserData(profileModel);
+                        //   contrlrr.getUserData();
+                        //   print(profileModel);
+                        //   print(profileModel.name);
+                        // }
                       },
                       child: const Text('Submit'),
                     ),
@@ -219,7 +219,7 @@ class EditProfilePage extends StatelessWidget {
   }
 }
 
-class EditProfileField extends StatelessWidget {
+class EditProfileField extends StatelessWidget{
   const EditProfileField({
     Key? key,
     required this.title,

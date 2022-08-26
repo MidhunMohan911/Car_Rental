@@ -1,6 +1,9 @@
 import 'package:car_rental/API/Models/car_model.dart';
 import 'package:car_rental/API/Models/profile_model.dart';
 import 'package:car_rental/API/Services/car_services.dart';
+import 'package:car_rental/API/Services/dio_client.dart';
+import 'package:car_rental/API/Services/search_service.dart';
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 
 // enum DropdownEnums { age, gender, district }
@@ -66,6 +69,20 @@ class Controller extends GetxController {
       return data!;
     } catch (e) {
       // Get.snackbar('oops! ', '$e');
+      loading.value = false;
+      return [];
+    }
+  }
+
+  Future<List<CarModel>> sortDistrictData({required String place}) async {
+    loading.value = true;
+    try {
+      var districtData = await SortByDistrict.sortDistrict(place: place);
+
+      loading.value = false;
+      return districtData!;
+    }  catch (e) {
+      print(e);
       loading.value = false;
       return [];
     }

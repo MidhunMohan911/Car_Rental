@@ -1,27 +1,36 @@
-import 'dart:convert';
-
+import 'package:car_rental/API/Controller/book_controller.dart';
 import 'package:car_rental/API/Controller/controller.dart';
 import 'package:car_rental/API/Models/car_model.dart';
 import 'package:car_rental/API/Models/local_storage.dart';
 import 'package:car_rental/API/Models/wishlist_model.dart';
+import 'package:car_rental/API/Services/book_car_services.dart';
 import 'package:car_rental/API/Services/wishlist_services.dart';
-import 'package:car_rental/Screens/Booking%20Details/booking_details.dart';
 import 'package:car_rental/Screens/Location/location.dart';
 import 'package:car_rental/core/core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class CarDetails extends StatelessWidget {
+class CarDetails extends StatefulWidget {
   CarModel id;
   CarDetails({Key? key, required this.id}) : super(key: key);
 
-  Controller controller = Get.find<Controller>();
-  DateTime date = DateTime.now();
+  @override
+  State<CarDetails> createState() => _CarDetailsState();
+}
+
+class _CarDetailsState extends State<CarDetails> {
+  // Controller controller = Get.find<Controller>();
+  BookingController bookingController = BookingController();
+
+  DateTimeRange dateRange =
+      DateTimeRange(start: DateTime(2022, 11, 07), end: DateTime(2022, 12, 24));
 
   @override
   Widget build(BuildContext context) {
-    
+    final start = dateRange.start;
+    final end = dateRange.end;
+    final difference = dateRange.duration;
 
     return Scaffold(
       appBar: AppBar(
@@ -42,14 +51,14 @@ class CarDetails extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: kwhite,
                       image: DecorationImage(
-                          image: NetworkImage(id.imgUrl.toString()),
+                          image: NetworkImage(widget.id.imgUrl.toString()),
                           fit: BoxFit.contain)),
                   child: Align(
                     alignment: Alignment.bottomLeft,
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 15, left: 10),
                       child: Text(
-                        '${id.brand}${id.model} ',
+                        '${widget.id.brand}${widget.id.model} ',
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 25),
                       ),
@@ -85,14 +94,13 @@ class CarDetails extends StatelessWidget {
               ],
             ),
             Container(
-              // height: MediaQuery.of(context).size.height,
               color: themeColor,
               child: Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Flexible(
+                      SizedBox(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -103,38 +111,35 @@ class CarDetails extends StatelessWidget {
                             SizedBox(
                               height: 35,
                               width: 130,
-                              child:
-                                  GetBuilder<Controller>(builder: (controller) {
-                                return GestureDetector(
-                                  onTap: () async {
-                                    DateTime? newDate = await showDatePicker(
-                                        context: context,
-                                        initialDate: date,
-                                        firstDate: DateTime.now(),
-                                        lastDate: DateTime(2023));
-                                    if (newDate == null) {
-                                      return;
-                                    }
-                                    date = newDate;
-                                    controller.update();
-                                  },
-                                  child: Card(
-                                      child: Padding(
-                                    padding: const EdgeInsets.only(top: 2),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Text(
-                                          '${date.year}/${date.month}/${date.day}',
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        const Icon(CupertinoIcons.calendar)
-                                      ],
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  DateTimeRange? newDateRange =
+                                      await showDateRangePicker(
+                                          context: context,
+                                          initialDateRange: dateRange,
+                                          firstDate: DateTime(1900),
+                                          lastDate: DateTime(2100));
+
+                                  if (newDateRange == null) return;
+                                  setState(() {
+                                    dateRange = newDateRange;
+                                  });
+                                },
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text(
+                                      '${start.year}/${start.month}/${start.day}',
+                                      textAlign: TextAlign.center,
                                     ),
-                                  )),
-                                );
-                              }),
+                                    const Icon(
+                                      CupertinoIcons.calendar,
+                                      size: 18,
+                                    )
+                                  ],
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -152,51 +157,46 @@ class CarDetails extends StatelessWidget {
                               style: TextStyle(color: kwhite),
                             ),
                             SizedBox(
-                              height: 35,
-                              width: 130,
-                              child:
-                                  GetBuilder<Controller>(builder: (controller) {
-                                return GestureDetector(
-                                  onTap: () async {
-                                    DateTime? newDate = await showDatePicker(
-                                      context: context,
-                                      firstDate: DateTime.now(),
-                                      lastDate: DateTime(2023),
-                                      initialDate: date,
-                                    );
-                                    if (newDate == null) {
-                                      return;
-                                    }
-                                    date = newDate;
-                                    controller.update();
+                                height: 35,
+                                width: 130,
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    DateTimeRange? newDateRange =
+                                        await showDateRangePicker(
+                                            context: context,
+                                            initialDateRange: dateRange,
+                                            firstDate: DateTime(1900),
+                                            lastDate: DateTime(2100));
+
+                                    if (newDateRange == null) return;
+                                    setState(() {
+                                      dateRange = newDateRange;
+                                    });
                                   },
-                                  child: Card(
-                                      child: Padding(
-                                    padding: const EdgeInsets.only(top: 2),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Text(
-                                          '${date.year}/${date.month}/${date.day}',
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        const Icon(CupertinoIcons.calendar)
-                                      ],
-                                    ),
-                                  )),
-                                );
-                              }),
-                            ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Text(
+                                        '${end.year}/${end.month}/${end.day}',
+                                      ),
+                                      const Icon(
+                                        CupertinoIcons.calendar,
+                                        size: 18,
+                                      )
+                                    ],
+                                  ),
+                                )),
                           ],
                         ),
                       ),
                     ],
                   ),
-                  Text('Total days :0 days',
+                  Text('Total days : ${difference.inDays} days',
                       style:
                           TextStyle(color: kwhite, fontSize: 11, height: 1.8)),
-                  Text('Total Amount :0 /-',
+                  Text(
+                      'Total Amount : ${difference.inDays * widget.id.price} /-',
                       style: TextStyle(color: kwhite, height: 1.8)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -208,7 +208,10 @@ class CarDetails extends StatelessWidget {
                           side: const BorderSide(width: 1, color: Colors.blue),
                         ),
                         onPressed: () {
-                          Get.to(const BookingDetailsPage());
+                          BookCarServices.bookCarService(
+                              start.toString(), end.toString(), widget.id.id);
+
+                          // Get.to(const BookingDetailsPage());
                         },
                         child: const Text('BOOK NOW',
                             style: TextStyle(color: Colors.blue, fontSize: 11)),
@@ -225,8 +228,8 @@ class CarDetails extends StatelessWidget {
                                     userId: userId!);
                             wishlistModel.then((value) => wishList = value!);
                             bool isNotAdded = wishList
-                                .where(
-                                    (element) => element.id.toString() == id.id)
+                                .where((element) =>
+                                    element.id.toString() == widget.id.id)
                                 .isEmpty;
                             print(isNotAdded);
 
@@ -239,9 +242,9 @@ class CarDetails extends StatelessWidget {
                                           GetLocalStorage.getUserIdAndToken(
                                               "uId");
                                       WishlistServices.addWishlist(
-                                          userId: userId!, carId: id.id);
+                                          userId: userId!, carId: widget.id.id);
                                       Get.snackbar('Successfully Added',
-                                          '${id.brand + id.model} added to wishlist',
+                                          '${widget.id.brand + widget.id.model} added to wishlist',
                                           colorText: kwhite,
                                           backgroundColor: Colors.black);
                                     },
@@ -255,10 +258,10 @@ class CarDetails extends StatelessWidget {
                   Wrap(
                     alignment: WrapAlignment.center,
                     children: [
-                      carDetailCard('Rent/day', '${id.price}'),
-                      carDetailCard('Number of Seats', '${id.seats}'),
-                      carDetailCard('Milege', id.mileage),
-                      carDetailCard('Fuel Type', id.fueltype.name),
+                      carDetailCard('Rent/day', '${widget.id.price}'),
+                      carDetailCard('Number of Seats', '${widget.id.seats}'),
+                      carDetailCard('Milege', widget.id.mileage),
+                      carDetailCard('Fuel Type', widget.id.fueltype.name),
                       Card(
                           child: Padding(
                         padding:
@@ -269,7 +272,7 @@ class CarDetails extends StatelessWidget {
                               'Pickup Location',
                               style: TextStyle(fontWeight: FontWeight.w500),
                             ),
-                            Text(id.location.toString()),
+                            Text(widget.id.location.toString()),
                             SizedBox(
                               height: 35,
                               child: IconButton(
@@ -280,9 +283,12 @@ class CarDetails extends StatelessWidget {
                           ],
                         ),
                       )),
-                      carDetailCard('Vehicle Number', id.regNo.toString()),
-                      carDetailCard('Registered Date', id.register.toString()),
-                      carDetailCard('Description', id.description.toString()),
+                      carDetailCard(
+                          'Vehicle Number', widget.id.regNo.toString()),
+                      carDetailCard(
+                          'Registered Date', widget.id.register.toString()),
+                      carDetailCard(
+                          'Description', widget.id.description.toString()),
                     ],
                   ),
                   sizedBox30,
@@ -295,6 +301,7 @@ class CarDetails extends StatelessWidget {
     );
   }
 
+  // Future pickDateRange() async {
   Card carDetailCard(String title, String subtitle) {
     return Card(
         child: Padding(
