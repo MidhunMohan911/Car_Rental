@@ -1,4 +1,5 @@
 import 'package:car_rental/API/Models/car_model.dart';
+import 'package:car_rental/API/Models/singlecar_model.dart';
 import 'package:car_rental/API/Services/dio_client.dart';
 import 'package:dio/dio.dart';
 
@@ -29,15 +30,17 @@ class CarServices {
     }
   }
 
-  static Future<String> getSingleCar({required String carId}) async {
+  static Future<SingleCarModel?> getSingleCar({required String carId}) async {
     try {
       var response = await dio.post('/GetSingleCar/$carId');
       print(response.data);
-      return response.data;
+      SingleCarModel singlecarData = SingleCarModel.fromJson(response.data);
+      return singlecarData;
     } on DioError catch (e) {
       print(e.error);
       print(e.response!.statusMessage);
-      return '';
+      return null;
+      
     }
   }
 }

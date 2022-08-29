@@ -45,6 +45,8 @@ dependencies:
   get_storage: ^2.0.3
   snippet_coder_utils: ^1.0.12
   date_range_picker: ^1.0.7
+  google_maps_flutter: ^2.0.2
+  flutter_polyline_points: ^1.0.0
   
 
 dev_dependencies:

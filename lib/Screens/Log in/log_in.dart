@@ -1,5 +1,7 @@
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:car_rental/API/Controller/controller.dart';
 import 'package:car_rental/API/Services/loginandsignup.dart';
 import 'package:car_rental/Screens/Home/home.dart';
 import 'package:car_rental/Screens/Log%20in/Widgets/otp_login.dart';
@@ -19,8 +21,13 @@ class LoginPage extends StatelessWidget {
   final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  Controller controller = Controller();
+
   @override
   Widget build(BuildContext context) {
+    var lodinggg = controller.loading.value;
+    lodinggg = false;
+
     return SafeArea(
       child: Scaffold(
         body: Stack(
@@ -54,123 +61,139 @@ class LoginPage extends StatelessWidget {
                     ]),
                 child: Align(
                   alignment: Alignment.topCenter,
-                  child: Column(
-                    children: [
-                      sizedBox15,
-                      const CircleAvatar(
-                        backgroundImage: AssetImage('assets/images/lock.jpeg'),
-                        radius: 22,
-                        backgroundColor: Colors.white,
-                      ),
-                      sizedBox10,
-                      Text('Sign In',
-                          style: TextStyle(
-                              color: kwhite,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 20)),
-                      sizedBox10,
-                      TextFormPage(
-                        title: 'Email',
-                        controller: _userNameController,
-                        obscuretext: false,
-                        keyboardtype: TextInputType.emailAddress,
-                        validator: (String? value) {
-                          if (value!.isEmpty || !value.isEmail) {
-                            return "Enter Correct Email Address";
-                          } else {
-                            return null;
-                          }
-                        },
-                      ),
-                      sizedBox15,
-                      TextFormPage(
-                          title: 'Password',
-                          controller: _passwordController,
-                          obscuretext: true,
-                          validator: (value) {
-                            RegExp regex = RegExp(
-                                r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
-                            if (value!.isEmpty) {
-                              return 'Please enter password';
-                            } else if (value.length < 6) {
-                              return 'please enter atleast 6 digit password';
-                            }
-
-                            return null;
-                          }),
-                      sizedBox30,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15),
-                            child: ElevatedButton(
-                              onPressed: () {},
-                              child: const Text('✘ CLOSE'),
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all(kRed)),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15),
-                            child: ElevatedButton(
-                                onPressed: () async {
-                                  UserAuthService.loginUser(
-                                      userName: _userNameController.text,
-                                      password:
-                                          _passwordController.text.trim());
-                                },
-                                child: const Text('LOGIN ➲')),
-                          ),
-                        ],
-                      ),
-                      sizedBox10,
-                      TextButton(
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (context) =>
-                                    LoginWithOtp(formKey: _formKey));
-                          },
-                          child: Text(
-                            'LOGIN WITH OTP',
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        sizedBox15,
+                        const CircleAvatar(
+                          backgroundImage:
+                              AssetImage('assets/images/lock.jpeg'),
+                          radius: 22,
+                          backgroundColor: Colors.white,
+                        ),
+                        sizedBox10,
+                        Text('Sign In',
                             style: TextStyle(
                                 color: kwhite,
                                 fontWeight: FontWeight.w500,
-                                shadows: const [
-                                  Shadow(color: Colors.black, blurRadius: 10)
-                                ]),
-                          )),
-                      sizedBox10,
-                      RichText(
-                          text: TextSpan(
-                              text: ' Already have an account ? ',
+                                fontSize: 20)),
+                        sizedBox10,
+                        TextFormPage(
+                          title: 'Email',
+                          controller: _userNameController,
+                          obscuretext: false,
+                          keyboardtype: TextInputType.emailAddress,
+                          validator: (String? value) {
+                            if (value!.isEmpty || !value.isEmail) {
+                              return "Enter Correct Email Address";
+                            } else {
+                              return null;
+                            }
+                          },
+                        ),
+                        sizedBox15,
+                        TextFormPage(
+                            title: 'Password',
+                            controller: _passwordController,
+                            obscuretext: true,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter password';
+                              } else if (value.length < 6) {
+                                return 'please enter atleast 6 digit password';
+                              }
+
+                              return null;
+                            }),
+                        sizedBox30,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 15),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  exit(0);
+                                },
+                                child: const Text('✘ CLOSE'),
+                                style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all(kRed)),
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 15),
+                              child: ElevatedButton(
+                                  onPressed: () async {
+                                    // lodinggg = true;
+                                    // print(lodinggg);
+                                    bool isValid =
+                                        _formKey.currentState!.validate();
+
+                                    if (isValid) {
+                                      UserAuthService.loginUser(
+                                          userName: _userNameController.text,
+                                          password:
+                                              _passwordController.text.trim());
+                                      // lodinggg = false;
+                                      Get.offAll(HomeScreen());
+                                    }
+                                  },
+                                  child: const Text('LOGIN ➲')),
+                            ),
+                          ],
+                        ),
+                        sizedBox10,
+                        TextButton(
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) =>
+                                      LoginWithOtp(formKey: _formKey));
+                            },
+                            child: Text(
+                              'LOGIN WITH OTP',
                               style: TextStyle(
                                   color: kwhite,
                                   fontWeight: FontWeight.w500,
-                                  fontSize: 15,
                                   shadows: const [
-                                    Shadow(color: Colors.black, blurRadius: 25)
+                                    Shadow(color: Colors.black, blurRadius: 10)
                                   ]),
-                              children: [
-                            TextSpan(
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () => Navigator.of(context)
-                                          .push(MaterialPageRoute(
-                                        builder: (context) => SignUpPage(),
-                                      )),
-                                text: 'Sign Up ?',
-                                style: const TextStyle(
-                                    color: Colors.blue,
-                                    fontSize: 15,
+                            )),
+                        sizedBox10,
+                        RichText(
+                            text: TextSpan(
+                                text: ' Already have an account ? ',
+                                style: TextStyle(
+                                    color: kwhite,
                                     fontWeight: FontWeight.w500,
-                                    shadows: [
+                                    fontSize: 15,
+                                    shadows: const [
                                       Shadow(
                                           color: Colors.black, blurRadius: 25)
-                                    ])),
-                          ])),
-                    ],
+                                    ]),
+                                children: [
+                              TextSpan(
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () => Navigator.of(context)
+                                            .push(MaterialPageRoute(
+                                          builder: (context) => SignUpPage(),
+                                        )),
+                                  text: 'Sign Up ?',
+                                  style: const TextStyle(
+                                      color: Colors.blue,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500,
+                                      shadows: [
+                                        Shadow(
+                                            color: Colors.black, blurRadius: 25)
+                                      ])),
+                            ])),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -183,8 +206,6 @@ class LoginPage extends StatelessWidget {
 
   //----------Login with OTP---------//
 }
-
-
 
 class OtpNumber extends StatelessWidget {
   const OtpNumber({

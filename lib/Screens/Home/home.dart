@@ -8,6 +8,7 @@ import 'package:car_rental/Screens/Car%20Details/car_details.dart';
 import 'package:car_rental/Screens/Chat/chat.dart';
 import 'package:car_rental/Screens/Home/widgets/card_home.dart';
 import 'package:car_rental/Screens/Home/widgets/home_widget.dart';
+import 'package:car_rental/Screens/Location/location.dart';
 
 import 'package:car_rental/core/core.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -358,11 +359,11 @@ class HomeScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromARGB(255, 21, 19, 135),
         onPressed: () {
-          // print(GetLocalStorage.getUserIdAndToken("token"));
+          Get.to(LocationPage());
 
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => const ChatPage(),
-          ));
+          // Navigator.of(context).push(MaterialPageRoute(
+          //   builder: (context) => const ChatPage(),
+          // ));
         },
         child: const Icon(Icons.chat_bubble),
       ),

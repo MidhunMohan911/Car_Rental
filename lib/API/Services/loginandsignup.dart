@@ -29,7 +29,7 @@ class UserAuthService {
 
       GetLocalStorage.saveToken(user);
       print(response.data);
-      Get.offAll(HomeScreen());
+      
     } on DioError catch (e) {
       print(e.message);
       Get.snackbar('Warning', e.response!.data['message'],

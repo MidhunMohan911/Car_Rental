@@ -1,5 +1,9 @@
+// ignore_for_file: avoid_print
+
 import 'package:car_rental/API/Controller/book_controller.dart';
 import 'package:car_rental/API/Controller/controller.dart';
+import 'package:car_rental/API/Controller/singlecar_controller.dart';
+import 'package:car_rental/API/Models/booking_details_model.dart';
 import 'package:car_rental/API/Models/car_model.dart';
 import 'package:car_rental/API/Models/local_storage.dart';
 import 'package:car_rental/API/Models/wishlist_model.dart';
@@ -10,6 +14,9 @@ import 'package:car_rental/core/core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../API/Controller/wishlist_controller.dart';
+import '../Booking Details/booking_details.dart';
 
 class CarDetails extends StatefulWidget {
   CarModel id;
@@ -22,15 +29,27 @@ class CarDetails extends StatefulWidget {
 class _CarDetailsState extends State<CarDetails> {
   // Controller controller = Get.find<Controller>();
   BookingController bookingController = BookingController();
+  WishlistController wishlistController = WishlistController();
 
-  DateTimeRange dateRange =
-      DateTimeRange(start: DateTime(2022, 11, 07), end: DateTime(2022, 12, 24));
+  DateTimeRange? dateRange;
+
 
   @override
   Widget build(BuildContext context) {
-    final start = dateRange.start;
-    final end = dateRange.end;
-    final difference = dateRange.duration;
+
+    String start = dateRange == null
+        ? "Trip starts"
+        : "${dateRange!.start.day}/${dateRange!.start.month}/${dateRange!.start.year}";
+    final end = dateRange == null
+        ? "Trip ends"
+        : "${dateRange!.end.day}/${dateRange!.end.month}/${dateRange!.end.year}";
+    String difference = dateRange == null
+        ? "0 days"
+        : "'Total days : ${dateRange!.duration.inDays} days'";
+
+    String amount = dateRange == null
+        ? "No amount"
+        : 'Total Amount : ${dateRange!.duration.inDays * widget.id.price} /-';
 
     return Scaffold(
       appBar: AppBar(
@@ -112,13 +131,15 @@ class _CarDetailsState extends State<CarDetails> {
                               height: 35,
                               width: 130,
                               child: ElevatedButton(
+                                style: elvButtonStyleWhite,
                                 onPressed: () async {
                                   DateTimeRange? newDateRange =
                                       await showDateRangePicker(
-                                          context: context,
-                                          initialDateRange: dateRange,
-                                          firstDate: DateTime(1900),
-                                          lastDate: DateTime(2100));
+                                    context: context,
+                                    initialDateRange: dateRange,
+                                    firstDate: DateTime.now(),
+                                    lastDate: DateTime(2100),
+                                  );
 
                                   if (newDateRange == null) return;
                                   setState(() {
@@ -130,12 +151,13 @@ class _CarDetailsState extends State<CarDetails> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Text(
-                                      '${start.year}/${start.month}/${start.day}',
-                                      textAlign: TextAlign.center,
+                                      start,
+                                      style: TextStyle(color: Colors.black),
                                     ),
                                     const Icon(
                                       CupertinoIcons.calendar,
                                       size: 18,
+                                      color: Colors.black,
                                     )
                                   ],
                                 ),
@@ -160,6 +182,7 @@ class _CarDetailsState extends State<CarDetails> {
                                 height: 35,
                                 width: 130,
                                 child: ElevatedButton(
+                                  style: elvButtonStyleWhite,
                                   onPressed: () async {
                                     DateTimeRange? newDateRange =
                                         await showDateRangePicker(
@@ -178,11 +201,14 @@ class _CarDetailsState extends State<CarDetails> {
                                         MainAxisAlignment.spaceEvenly,
                                     children: [
                                       Text(
-                                        '${end.year}/${end.month}/${end.day}',
+                                        end,
+                                        style: const TextStyle(
+                                            color: Colors.black),
                                       ),
                                       const Icon(
                                         CupertinoIcons.calendar,
                                         size: 18,
+                                        color: Colors.black,
                                       )
                                     ],
                                   ),
@@ -192,12 +218,10 @@ class _CarDetailsState extends State<CarDetails> {
                       ),
                     ],
                   ),
-                  Text('Total days : ${difference.inDays} days',
+                  Text(difference,
                       style:
                           TextStyle(color: kwhite, fontSize: 11, height: 1.8)),
-                  Text(
-                      'Total Amount : ${difference.inDays * widget.id.price} /-',
-                      style: TextStyle(color: kwhite, height: 1.8)),
+                  Text(amount, style: TextStyle(color: kwhite, height: 1.8)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -208,50 +232,90 @@ class _CarDetailsState extends State<CarDetails> {
                           side: const BorderSide(width: 1, color: Colors.blue),
                         ),
                         onPressed: () {
-                          BookCarServices.bookCarService(
-                              start.toString(), end.toString(), widget.id.id);
+                          if (dateRange == null) {
+                            Get.snackbar('Warning', 'Please select date',
+                                colorText: kwhite,
+                                backgroundColor: Colors.black);
+                            return;
+                          }
 
-                          // Get.to(const BookingDetailsPage());
+                          BookCarServices.bookCarService(
+                            start,
+                            end,
+                            widget.id.id,
+                          );
+
+                          BookingDetailsModel bookingDetailsModel =
+                              BookingDetailsModel(
+                            carName: widget.id.brand + widget.id.model,
+                            customer: "Midhun",
+                            tripEnds: end,
+                            location: widget.id.location,
+                            tripStarts: start,
+                            amount: amount,
+                          );
+
+                          Get.to(BookingDetailsPage(
+                            bookingDetailsModel: bookingDetailsModel,
+                          ));
                         },
                         child: const Text('BOOK NOW',
                             style: TextStyle(color: Colors.blue, fontSize: 11)),
                       ),
                       const SizedBox(width: 10),
-                      GetBuilder<Controller>(
-                          init: Controller(),
-                          builder: (controller) {
-                            List<WishlistModel> wishList = [];
+                      GetBuilder<WishlistController>(
+                          init: WishlistController(),
+                          initState: (state) async {
+                            String? userId =
+                                GetLocalStorage.getUserIdAndToken("uId");
+                            var wishlistModel = await wishlistController
+                                .getWishlistData(userId: userId!);
+                          },
+                          builder: (wishlistController) {
                             String? userId =
                                 GetLocalStorage.getUserIdAndToken("uId");
                             var wishlistModel =
-                                WishlistServices.getDataFromWishlist(
-                                    userId: userId!);
-                            wishlistModel.then((value) => wishList = value!);
-                            bool isNotAdded = wishList
-                                .where((element) =>
-                                    element.id.toString() == widget.id.id)
-                                .isEmpty;
+                                wishlistController.getWishlistData(
+                              userId: userId!,
+                            );
+                            // WishlistServices.getDataFromWishlist(
+                            //     userId: userId!);
+                            wishlistModel.then((value) =>
+                                wishlistController.wishlistId = value!);
+                            print(wishlistModel);
+                            bool isNotAdded = wishlistController.wishlistId.any(
+                              (element) => element.id == widget.id.id,
+                            );
                             print(isNotAdded);
 
-                            return isNotAdded
-                                ? TextButton(
-                                    child: const Text('ADD TO WISHLIST',
-                                        style: TextStyle(color: Colors.blue)),
-                                    onPressed: () {
-                                      String? userId =
-                                          GetLocalStorage.getUserIdAndToken(
-                                              "uId");
-                                      WishlistServices.addWishlist(
-                                          userId: userId!, carId: widget.id.id);
-                                      Get.snackbar('Successfully Added',
-                                          '${widget.id.brand + widget.id.model} added to wishlist',
-                                          colorText: kwhite,
-                                          backgroundColor: Colors.black);
-                                    },
-                                  )
-                                : TextButton(
-                                    onPressed: () {},
-                                    child: const Text('REMOVE FROM WISHLIST'));
+                            return TextButton(
+                                onPressed: () {
+                                  String? userId =
+                                      GetLocalStorage.getUserIdAndToken("uId");
+                                  if (!isNotAdded) {
+                                    WishlistServices.addWishlist(
+                                        userId: userId!, carId: widget.id.id);
+                                    Get.snackbar('Successfully Added',
+                                        '${widget.id.brand + widget.id.model} added to wishlist',
+                                        colorText: kwhite,
+                                        backgroundColor: Colors.black);
+                                    wishlistController.update();
+                                    return;
+                                  }
+
+                                  wishlistController.removeWishlistData(
+                                      widget.id.id, userId!);
+                                  Get.snackbar('Successfully Removed',
+                                      '${widget.id.brand + widget.id.model} removed from wishlist',
+                                      colorText: kwhite,
+                                      backgroundColor: Colors.black);
+                                  wishlistController.update();
+                                },
+                                child: Text(
+                                  isNotAdded
+                                      ? 'REMOVE FROM WISHLIST'
+                                      : "ADD TO WISHLIST",
+                                ));
                           })
                     ],
                   ),

@@ -1,3 +1,4 @@
+import 'package:car_rental/API/Models/booking_details_model.dart';
 import 'package:car_rental/Screens/Booking%20Details/Widgets/payment_options.dart';
 import 'package:car_rental/core/core.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +6,12 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
 class BookingDetailsPage extends StatelessWidget {
-  const BookingDetailsPage({Key? key}) : super(key: key);
+  BookingDetailsPage({
+    Key? key,
+    required this.bookingDetailsModel,
+  }) : super(key: key);
+
+  BookingDetailsModel bookingDetailsModel;
 
   @override
   Widget build(BuildContext context) {
@@ -25,16 +31,16 @@ class BookingDetailsPage extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
             ),
             sizedBox15,
-            bookingDetailCard('Car', 'McLaren'),
-            bookingDetailCard('Customer', 'Midhun Mohan'),
-            bookingDetailCard('Trip starts', '10/08/2022'),
-            bookingDetailCard('Trip End', '11/08/2022'),
-            bookingDetailCard('Pickup Location', ' Kannur '),
+            bookingDetailCard('Car', bookingDetailsModel.carName),
+            // bookingDetailCard('Customer', 'Midhun Mohan'),
+            bookingDetailCard('Trip starts', bookingDetailsModel.tripStarts),
+            bookingDetailCard('Trip End', bookingDetailsModel.tripEnds),
+            bookingDetailCard('Pickup Location', bookingDetailsModel.location),
             bookingDetailCard('Our HelpLine', '+91 7559017884'),
             sizedBox10,
-            const Text(
-              'Total Amount : 610/-',
-              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 22),
+            Text(
+              'Total Amount : ' + bookingDetailsModel.amount,
+              style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 22),
             ),
             sizedBox10,
             Row(

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
+// ignore: must_be_immutable
 class EditProfilePage extends StatelessWidget {
   EditProfilePage({Key? key, required this.userDetails}) : super(key: key);
   ProfileModel userDetails;
@@ -51,175 +52,166 @@ class EditProfilePage extends StatelessWidget {
                 districtController.text = userDetails.district!;
                 addressController.text = userDetails.address!;
               }, builder: (contrlrr) {
-                return Column(
-                  children: [
-                    Stack(
-                      children: [
-                        Container(
-                          height: 80,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(100),
-                              bottomRight: Radius.circular(100),
+                return Form(
+                  key: formKey,
+                  child: Column(
+                    children: [
+                      Stack(
+                        children: [
+                          Container(
+                            height: 80,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(100),
+                                bottomRight: Radius.circular(100),
+                              ),
+                              color: themeColor,
                             ),
-                            color: themeColor,
                           ),
-                        ),
-                        const Center(
-                          child: CircleAvatar(
-                            backgroundImage: AssetImage(
-                                'assets/images/profile-photo_GREYDARK-scaled.jpg'),
-                            radius: 70,
-                          ),
-                        )
-                      ],
-                    ),
-                    sizedBox15,
-                    EditProfileField(
-                        title: 'Name',
-                        detail: TextFormField(
-                          controller: nameController,
-                          validator: (value) {
-                            String pattern = r'(^[a-z A-Z]+$)';
-                            RegExp regExp = RegExp(pattern.toString());
-                            if (value!.isEmpty) {
-                              return 'enter a name';
-                            } else if (!regExp.hasMatch(value)) {
-                              return 'please enter a valid name';
-                            } else if (value.length < 4) {
-                              return "please enter 4 or more characters";
-                            }
-                            return null;
-                          },
-                          style: TextStyle(
-                              color: themeColor,
-                              fontSize: 17,
-                              fontWeight: FontWeight.w600),
-                        )),
-                    EditProfileField(
-                        title: 'Email',
-                        detail: TextFormField(
-                          controller: emailController,
-                          validator: (String? value) {
-                            if (value!.isEmpty || !value.isEmail) {
-                              return "Enter Correct Email Address";
-                            } else {
+                          const Center(
+                            child: CircleAvatar(
+                              backgroundImage: AssetImage(
+                                  'assets/images/profile-photo_GREYDARK-scaled.jpg'),
+                              radius: 70,
+                            ),
+                          )
+                        ],
+                      ),
+                      sizedBox15,
+                      EditProfileField(
+                          title: 'Name',
+                          detail: TextFormField(
+                            controller: nameController,
+                            validator: (value) {
+                              String pattern = r'(^[a-z A-Z]+$)';
+                              RegExp regExp = RegExp(pattern.toString());
+                              if (value!.isEmpty) {
+                                return 'enter a name';
+                              } else if (!regExp.hasMatch(value)) {
+                                return 'please enter a valid name';
+                              } else if (value.length < 4) {
+                                return "please enter 4 or more characters";
+                              }
                               return null;
-                            }
-                          },
-                          style: TextStyle(
-                              color: themeColor,
-                              fontSize: 17,
-                              fontWeight: FontWeight.w600),
-                        )),
-                    EditProfileField(
-                        title: 'Phone',
-                        detail: TextFormField(
-                          controller: phoneController,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "*required";
-                            } else if (!value.contains(RegExp(r'[0-9]'))) {
-                              return "please enter numbers";
-                            } else if (value.length != 10) {
-                              return "please enter 10 numbers";
-                            }
-                            return null;
-                          },
-                          style: TextStyle(
-                              color: themeColor,
-                              fontSize: 17,
-                              fontWeight: FontWeight.w600),
-                        )),
-                    EditProfileField(
-                        title: 'Age',
-                        detail: TextFormField(
-                          controller: ageController,
-                          style: TextStyle(
-                              color: themeColor,
-                              fontSize: 17,
-                              fontWeight: FontWeight.w600),
-                        )),
-                    EditProfileField(
-                        title: 'Gender',
-                        detail: TextFormField(
-                          controller: genderController,
-                          style: TextStyle(
-                              color: themeColor,
-                              fontSize: 17,
-                              fontWeight: FontWeight.w600),
-                        )),
-                    EditProfileField(
-                        title: 'District',
-                        detail: TextFormField(
-                          controller: districtController,
-                          style: TextStyle(
-                              color: themeColor,
-                              fontSize: 17,
-                              fontWeight: FontWeight.w600),
-                        )),
-                    EditProfileField(
-                        title: 'Address',
-                        detail: TextFormField(
-                          controller: addressController,
-                          style: TextStyle(
-                              color: themeColor,
-                              fontSize: 17,
-                              fontWeight: FontWeight.w600),
-                        )),
-                    ElevatedButton(
-                      style: elvButtonStyle,
-                      onPressed: () {
-                        print('hhhhhhh');
-                        final ProfileModel profileModel = ProfileModel(
-                          name: nameController.text,
-                          email: emailController.text,
-                          phone: int.parse(phoneController.text),
-                          age: int.parse(ageController.text),
-                          gender: genderController.text,
-                          address: addressController.text,
-                          district: districtController.text,
-                        );
-                        // UserProfileService.updateUserProfile(profileModel);
-                        contrlrr.updateUserData(profileModel);
-                        contrlrr.getUserData();
+                            },
+                            style: TextStyle(
+                                color: themeColor,
+                                fontSize: 17,
+                                fontWeight: FontWeight.w600),
+                          )),
+                      EditProfileField(
+                          title: 'Email',
+                          detail: TextFormField(
+                            controller: emailController,
+                            validator: (String? value) {
+                              if (value!.isEmpty || !value.isEmail) {
+                                return "Enter Correct Email Address";
+                              } else {
+                                return null;
+                              }
+                            },
+                            style: TextStyle(
+                                color: themeColor,
+                                fontSize: 17,
+                                fontWeight: FontWeight.w600),
+                          )),
+                      EditProfileField(
+                          title: 'Phone',
+                          detail: TextFormField(
+                            controller: phoneController,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "*required";
+                              } else if (!value.contains(RegExp(r'[0-9]'))) {
+                                return "please enter numbers";
+                              } else if (value.length != 10) {
+                                return "please enter 10 numbers";
+                              }
+                              return null;
+                            },
+                            style: TextStyle(
+                                color: themeColor,
+                                fontSize: 17,
+                                fontWeight: FontWeight.w600),
+                          )),
+                      EditProfileField(
+                          title: 'Age',
+                          detail: TextFormField(
+                            controller: ageController,
+                            style: TextStyle(
+                                color: themeColor,
+                                fontSize: 17,
+                                fontWeight: FontWeight.w600),
+                          )),
+                      EditProfileField(
+                          title: 'Gender',
+                          detail: TextFormField(
+                            controller: genderController,
+                            style: TextStyle(
+                                color: themeColor,
+                                fontSize: 17,
+                                fontWeight: FontWeight.w600),
+                          )),
+                      EditProfileField(
+                          title: 'District',
+                          detail: TextFormField(
+                            controller: districtController,
+                            style: TextStyle(
+                                color: themeColor,
+                                fontSize: 17,
+                                fontWeight: FontWeight.w600),
+                          )),
+                      EditProfileField(
+                          title: 'Address',
+                          detail: TextFormField(
+                            controller: addressController,
+                            style: TextStyle(
+                                color: themeColor,
+                                fontSize: 17,
+                                fontWeight: FontWeight.w600),
+                          )),
+                      ElevatedButton(
+                        style: elvButtonStyle,
+                        onPressed: () {
+                          print('hhhhhhh');
 
-                        // UserProfileService.getUserProfileData();
-                        print('mmmmmm');
+                          print('mmmmmm');
 
-                        // bool? isValid = formKey.currentState!.validate();
-                        // print(isValid);
+                          bool? isValid = formKey.currentState!.validate();
+                          print(isValid);
 
-                        // if (isValid) {
-                        //   final ProfileModel profileModel = ProfileModel(
-                        //     name: nameController.text,
-                        //     email: emailController.text,
-                        //     phone: int.parse(phoneController.text),
-                        //     age: int.parse(ageController.text),
-                        //     gender: genderController.text,
-                        //     address: addressController.text,
-                        //     district: districtController.text,
-                        //   );
-                        //   // UserProfileService.updateUserProfile(profileModel);
-                        //   // UserAuthService.signUpUser(profileModel);
-                        //   contrlrr.updateUserData(profileModel);
-                        //   contrlrr.getUserData();
-                        //   print(profileModel);
-                        //   print(profileModel.name);
-                        // }
-                      },
-                      child: const Text('Submit'),
-                    ),
-                    sizedBox30
-                  ],
+                          if (isValid) {
+                            final ProfileModel profileModel = ProfileModel(
+                              name: nameController.text,
+                              email: emailController.text,
+                              phone: int.parse(phoneController.text),
+                              age: int.parse(ageController.text),
+                              gender: genderController.text,
+                              address: addressController.text,
+                              district: districtController.text,
+                            );
+                            // UserProfileService.updateUserProfile(profileModel);
+                            // UserAuthService.signUpUser(profileModel);
+                            contrlrr.updateUserData(profileModel);
+                            contrlrr.getUserData();
+                            print(profileModel);
+                            print(profileModel.name);
+                            //Get.back();
+                          }
+                        },
+                        child: const Text('Submit'),
+                      ),
+                      sizedBox30
+                    ],
+                  ),
                 );
               }));
         }));
   }
 }
 
-class EditProfileField extends StatelessWidget{
+class EditProfileField extends StatelessWidget {
   const EditProfileField({
     Key? key,
     required this.title,

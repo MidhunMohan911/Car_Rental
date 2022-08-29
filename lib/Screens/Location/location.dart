@@ -1,27 +1,63 @@
-import 'package:car_rental/core/core.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'dart:async';
 
-class LocationPage extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+class LocationPage extends StatefulWidget {
   const LocationPage({Key? key}) : super(key: key);
 
   @override
+  State<LocationPage> createState() => _LocationPageState();
+}
+
+class _LocationPageState extends State<LocationPage> {
+  late GoogleMapController myMapController;
+  final Set<Marker> _markers = Set();
+  static const LatLng _mainLocation = const LatLng(25.69893, 32.6421);
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: appBarTitle(),
-        actions: [appBarWishlist(), appBarPopUp(context)],
-      ),
-      body: Container(
-        height: double.infinity,
-        width: double.infinity,
-        decoration: const BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage(
-                    'assets/images/Screenshot from 2022-08-09 16-02-05.png'),
-                fit: BoxFit.cover)),
-      ),
-    );
+    return MaterialApp(
+        home: Scaffold(
+            appBar: AppBar(
+              title: Text('Maps With Marker'),
+              backgroundColor: Colors.blue[900],
+            ),
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  child: GoogleMap(
+                    initialCameraPosition: CameraPosition(
+                      target: _mainLocation,
+                      zoom: 10.0,
+                    ),
+                    markers: this.myMarker(),
+                    mapType: MapType.normal,
+                    onMapCreated: (controller) {
+                      setState(() {
+                        myMapController = controller;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            )));
+  }
+
+  Set<Marker> myMarker() {
+    setState(() {
+      _markers.add(Marker(
+        // This marker id can be anything that uniquely identifies each marker.
+        markerId: MarkerId(_mainLocation.toString()),
+        position: _mainLocation,
+        infoWindow: InfoWindow(
+          title: 'Historical City',
+          snippet: '5 Star Rating',
+        ),
+        icon: BitmapDescriptor.defaultMarker,
+      ));
+    });
+
+    return _markers;
   }
 }

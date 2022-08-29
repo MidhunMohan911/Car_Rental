@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 
 import 'package:car_rental/API/Controller/wishlist_controller.dart';
@@ -89,11 +91,11 @@ class WishlistPage extends StatelessWidget {
                             side: BorderSide(width: 2, color: themeColor),
                           ),
                           onPressed: () {
-                            Future<String> bbb =
-                                CarServices.getSingleCar(carId: data.id!);
+                            // Future<String> bbb =
+                            //     CarServices.getSingleCar(carId: data.id!);
                             print('hhjhjjh');
                             String carDetails = '';
-                            bbb.then((value) => carDetails = value);
+                           // bbb.then((value) => carDetails = value);
                             var carDetail = jsonDecode(carDetails);
                             print('jhjjhjhjhh' + carDetail);
                             var car = CarModel.fromJson(carDetail);
