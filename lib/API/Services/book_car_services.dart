@@ -11,6 +11,13 @@ class BookCarServices {
           data: {'id': carId, 'val': tripStarts, 'val2': tripends});
 
       print(response.data);
-    } on DioError catch (e) {}
+    } on DioError catch (e) {
+      print(e.error);
+      print('checkdate error');
+      print(e.response!.statusMessage);
+    }
   }
+
+
+  
 }

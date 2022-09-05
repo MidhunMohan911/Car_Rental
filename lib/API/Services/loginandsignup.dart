@@ -25,11 +25,13 @@ class UserAuthService {
       Map<String, String> user = {
         "uId": response.data['_id'],
         "token": response.data['token'],
+        "email": response.data['email'],
+        "name" : response.data['name']
+
       };
 
       GetLocalStorage.saveToken(user);
       print(response.data);
-      
     } on DioError catch (e) {
       print(e.message);
       Get.snackbar('Warning', e.response!.data['message'],
@@ -70,6 +72,8 @@ class UserAuthService {
       Map<String, String> user = {
         "uId": response.data['user'],
         "token": response.data['token'],
+        "email": response.data['email'],
+        "name" : response.data['name']
       };
       print('ppppp');
       GetLocalStorage.saveToken(user);

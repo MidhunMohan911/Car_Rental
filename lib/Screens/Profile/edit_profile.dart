@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'package:car_rental/API/Controller/controller.dart';
 import 'package:car_rental/API/Controller/profile_controller.dart';
 import 'package:car_rental/API/Models/profile_model.dart';
 
@@ -7,6 +8,8 @@ import 'package:car_rental/core/core.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+
+import '../../API/Models/local_storage.dart';
 
 // ignore: must_be_immutable
 class EditProfilePage extends StatelessWidget {
@@ -26,6 +29,7 @@ class EditProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     UserProfileController userProfileController =
         Get.find<UserProfileController>();
+    Controller controller = Get.find<Controller>();
     return Scaffold(
         appBar: AppBar(
           title: const Text('Edit Profile',
@@ -139,6 +143,15 @@ class EditProfilePage extends StatelessWidget {
                           title: 'Age',
                           detail: TextFormField(
                             controller: ageController,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'enter age';
+                              } else if (int.parse(value) < 17 ||
+                                  int.parse(value) > 45) {
+                                return 'please enter b/w 18-45';
+                              }
+                              return null;
+                            },
                             style: TextStyle(
                                 color: themeColor,
                                 fontSize: 17,
@@ -148,6 +161,12 @@ class EditProfilePage extends StatelessWidget {
                           title: 'Gender',
                           detail: TextFormField(
                             controller: genderController,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'enter Gender';
+                              }
+                              return null;
+                            },
                             style: TextStyle(
                                 color: themeColor,
                                 fontSize: 17,
@@ -176,7 +195,8 @@ class EditProfilePage extends StatelessWidget {
                         onPressed: () {
                           print('hhhhhhh');
 
-                          print('mmmmmm');
+                          String? userId =
+                              GetLocalStorage.getUserIdAndToken('uId');
 
                           bool? isValid = formKey.currentState!.validate();
                           print(isValid);
@@ -193,8 +213,8 @@ class EditProfilePage extends StatelessWidget {
                             );
                             // UserProfileService.updateUserProfile(profileModel);
                             // UserAuthService.signUpUser(profileModel);
-                            contrlrr.updateUserData(profileModel);
-                            contrlrr.getUserData();
+                            contrlrr.updateUserData(profileModel, userId!);
+                            // contrlrr.getUserData(userId);
                             print(profileModel);
                             print(profileModel.name);
                             //Get.back();

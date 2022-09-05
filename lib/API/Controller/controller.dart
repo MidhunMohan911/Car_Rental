@@ -1,12 +1,11 @@
 import 'package:car_rental/API/Models/car_model.dart';
-import 'package:car_rental/API/Models/profile_model.dart';
 import 'package:car_rental/API/Services/car_services.dart';
-import 'package:car_rental/API/Services/dio_client.dart';
+import 'package:car_rental/API/Services/loginandsignup.dart';
 import 'package:car_rental/API/Services/search_service.dart';
-import 'package:dio/dio.dart';
+import 'package:car_rental/Screens/Home/home.dart';
 import 'package:get/get.dart';
 
-// enum DropdownEnums { age, gender, district }
+
 
 class Controller extends GetxController {
   String? selected;
@@ -14,6 +13,7 @@ class Controller extends GetxController {
   String? districtSelected;
   List<int> ageList = List.generate(27, (index) => 18 + index);
   // var httpClient = http.Client();
+  var loginLoading = false.obs;
   RxList<CarModel> totalCars = <CarModel>[].obs;
 
   List<String> districts = [
@@ -32,6 +32,16 @@ class Controller extends GetxController {
     "Kollam",
     "Trivandrum",
   ];
+
+  Future loginFile(String userName, String password) async {
+    loginLoading.value = true;
+    await Future.delayed(const Duration(seconds: 2));
+    var data =
+        await UserAuthService.loginUser(userName: userName, password: password);
+    loginLoading.value = false;
+    Get.offAll(HomeScreen());
+    return data;
+  }
 
   var loading = true.obs;
   List<String> listType = [
@@ -81,16 +91,19 @@ class Controller extends GetxController {
 
       loading.value = false;
       return districtData!;
-    }  catch (e) {
+    } catch (e) {
       print(e);
       loading.value = false;
       return [];
     }
   }
 
+ 
+
   @override
   void onInit() {
     getData("/getcarData", "data").then((value) => totalCars.value = value);
+   // getAllWishlistData(userIdd!).then((value) => wishlistCars.value = value);
 
     super.onInit();
   }

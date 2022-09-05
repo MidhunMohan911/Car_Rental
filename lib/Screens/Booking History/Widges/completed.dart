@@ -1,27 +1,52 @@
+import 'package:car_rental/API/Controller/bookinghistory_controller.dart';
 import 'package:car_rental/core/core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 
 class CompletedPage extends StatelessWidget {
-  const CompletedPage({Key? key}) : super(key: key);
+  CompletedPage({Key? key}) : super(key: key);
+
+  BookingHistoryController bookingHistoryController =
+      Get.find<BookingHistoryController>();
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        sizedBox15,
-        const Padding(
-          padding: EdgeInsets.only(left: 15),
-          child: Text(
-            'Completed Trips',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+    return Obx(() {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          sizedBox15,
+          const Padding(
+            padding: EdgeInsets.only(left: 15),
+            child: Text(
+              'Completed Trips',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+            ),
           ),
-        ),
-        sizedBox15,
-        completeCancelCard(
-            'Mini Cooper', '10/02/2022', '12/02/2022', '78,500','COMPLETED', Colors.green)
-      ],
-    );
+          sizedBox15,
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListView.builder(
+                physics: const BouncingScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: bookingHistoryController.completedTrips.length,
+                itemBuilder: (context, index) {
+                  var data = bookingHistoryController.completedTrips[index];
+
+                  return completeCancelCard(
+                      data.carname!,
+                      data.startDate!,
+                      data.endDate!,
+                      data.payedAmount.toString(),
+                      'COMPLETED',
+                      Colors.green);
+                },
+              ),
+            ),
+          ),
+        ],
+      );
+    });
   }
 }

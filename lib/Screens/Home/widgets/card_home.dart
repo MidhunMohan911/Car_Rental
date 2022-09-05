@@ -30,37 +30,40 @@ class CardHomePage extends StatelessWidget {
             height: 125,
             child: ClipRRect(child: Image.network(image)),
           ),
-          Container(
-            width: 188,
-            height: 170,
-            decoration: BoxDecoration(
-                color: themeColor,
-                borderRadius:
-                    const BorderRadius.only(topLeft: Radius.circular(40))),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 9, right: 2),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  sizedBox10,
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Text('\$ $amount/-  ',
+          Flexible(
+            child: Container(
+              width: 188,
+              height: 195,
+              decoration: BoxDecoration(
+                  color: themeColor,
+                  borderRadius:
+                      const BorderRadius.only(topLeft: Radius.circular(40))),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 9, right: 2),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    sizedBox10,
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Text('\$ $amount/-  ',
+                          style: TextStyle(
+                              color: kwhite,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 17)),
+                    ),
+                    Text('$brand $model',
                         style: TextStyle(
                             color: kwhite,
                             fontWeight: FontWeight.w500,
                             fontSize: 17)),
-                  ),
-                  Text('$brand $model',
-                      style: TextStyle(
-                          color: kwhite,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 17)),
-                  Text('Available in $available',
-                      style: TextStyle(color: kwhite, fontSize: 13, height: 2)),
-                  sizedBox15,
-                  button,
-                ],
+                    Text('Available in $available',
+                        style:
+                            TextStyle(color: kwhite, fontSize: 13, height: 2)),
+                    sizedBox15,
+                    button,
+                  ],
+                ),
               ),
             ),
           )

@@ -6,6 +6,8 @@ class GetLocalStorage {
   static saveToken(Map<String, String> user) async {
     storage.write("uId", user["uId"]);
     storage.write("token", user["token"]);
+    storage.write('name', user['name']);
+    storage.write('email', user['email']);
   }
 
   static String? getUserIdAndToken(String key) {
@@ -17,5 +19,7 @@ class GetLocalStorage {
   static deleteUserTokenAnduId() {
     storage.remove("uId");
     storage.remove("token");
+    storage.remove('name');
+    storage.remove('email');
   }
 }

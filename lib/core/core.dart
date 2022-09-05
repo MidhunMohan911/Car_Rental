@@ -45,10 +45,9 @@ ButtonStyle elvButtonStyle = ButtonStyle(
     backgroundColor:
         MaterialStateProperty.all(const Color.fromARGB(255, 36, 36, 36)));
 
-        ButtonStyle elvButtonStyleWhite = ButtonStyle(
+ButtonStyle elvButtonStyleWhite = ButtonStyle(
     shape: MaterialStateProperty.all(const StadiumBorder()),
-    backgroundColor:
-        MaterialStateProperty.all(kwhite));
+    backgroundColor: MaterialStateProperty.all(kwhite));
 
 //----------AppBar Methods ---------//
 
@@ -102,45 +101,42 @@ Image appBarLogo() {
       'assets/images/depositphotos_81700460-stock-illustration-monogram-l-logo-letter.jpg');
 }
 
-Padding completeCancelCard(String car, String tripStart, String tripEnds,
+completeCancelCard(String car, String tripStart, String tripEnds,
     String totalrent, String lasttitle, Color color) {
-  return Padding(
-    padding: const EdgeInsets.only(left: 10),
-    child: Card(
-      color: themeColor,
-      elevation: 5,
-      child: SizedBox(
-        height: 200,
-        width: 280,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 15, top: 15),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Car :$car',
-                style: TextStyle(color: kwhite, fontSize: 17),
-              ),
-              Text(
-                'Trip Starts :$tripStart',
-                style: TextStyle(color: kwhite, fontSize: 15, height: 1.8),
-              ),
-              Text(
-                'Trip Ends :$tripEnds',
-                style: TextStyle(color: kwhite, fontSize: 15, height: 1.5),
-              ),
-              Text(
-                'Total Rent :$totalrent',
-                style: TextStyle(color: kwhite, fontSize: 19, height: 2.2),
-              ),
-              sizedBox30,
-              Text(
-                lasttitle,
-                style: TextStyle(
-                    color: color, fontSize: 18, fontWeight: FontWeight.w600),
-              )
-            ],
-          ),
+  return Card(
+    color: themeColor,
+    elevation: 5,
+    child: SizedBox(
+      height: 200,
+      width: 280,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 15, top: 15),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Car :$car',
+              style: TextStyle(color: kwhite, fontSize: 17),
+            ),
+            Text(
+              'Trip Starts :$tripStart',
+              style: TextStyle(color: kwhite, fontSize: 15, height: 1.8),
+            ),
+            Text(
+              'Trip Ends :$tripEnds',
+              style: TextStyle(color: kwhite, fontSize: 15, height: 1.5),
+            ),
+            Text(
+              'Total Rent :$totalrent',
+              style: TextStyle(color: kwhite, fontSize: 19, height: 2.2),
+            ),
+            sizedBox30,
+            Text(
+              lasttitle,
+              style: TextStyle(
+                  color: color, fontSize: 18, fontWeight: FontWeight.w600),
+            )
+          ],
         ),
       ),
     ),

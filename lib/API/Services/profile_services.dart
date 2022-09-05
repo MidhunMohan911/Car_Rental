@@ -1,5 +1,8 @@
 // ignore_for_file: avoid_print
 
+import 'dart:convert';
+
+import 'package:car_rental/API/Controller/profile_controller.dart';
 import 'package:car_rental/API/Models/local_storage.dart';
 import 'package:car_rental/API/Models/profile_model.dart';
 import 'package:car_rental/API/Services/dio_client.dart';
@@ -9,9 +12,7 @@ import 'package:get/get.dart';
 
 class UserProfileService {
   static Dio dio = DioClient.dio;
-  static Future<ProfileModel?> getUserProfileData() async {
-    String? userId = GetLocalStorage.getUserIdAndToken("uId");
-
+  static Future<ProfileModel?> getUserProfileData(String userId) async {
     try {
       var response = await dio.get("/getprofileuserdata/$userId");
 
@@ -26,8 +27,9 @@ class UserProfileService {
   }
 
   static Future<ProfileModel?> updateUserProfile(
-      ProfileModel profileModel) async {
-    String? userId = GetLocalStorage.getUserIdAndToken('uId');
+      ProfileModel profileModel, String userId) async {
+    UserProfileController userProfileController =
+        Get.find<UserProfileController>();
     Map<String, dynamic> headers = {
       "Content-type": "application/json",
       "Accept": "application/json"
@@ -42,7 +44,6 @@ class UserProfileService {
         gender: profileModel.gender,
         address: profileModel.address,
         district: profileModel.district,
-        password: profileModel.password,
       ).toJson();
 
       var response = await dio.patch(
@@ -54,15 +55,15 @@ class UserProfileService {
         ),
       );
 
-      ProfileModel? editedProfileMode = ProfileModel.fromJson(response.data);
+      // print(newProfileModel);
+
+      ProfileModel? updatedProfileMOdel =
+          await userProfileController.getUserData(userId);
 
       Get.snackbar('Success', response.data['message'],
           backgroundColor: kwhite);
 
-      print('tftftftdd' + response.statusMessage!);
-
-      print('llllll' + editedProfileMode.name.toString());
-      return editedProfileMode;
+      return updatedProfileMOdel;
     } on DioError catch (e) {
       print(e.error);
       print(e.response!.statusMessage);

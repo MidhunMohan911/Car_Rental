@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:car_rental/API/Controller/controller.dart';
 import 'package:car_rental/API/Models/local_storage.dart';
@@ -6,6 +7,7 @@ import 'package:car_rental/API/Services/search_service.dart';
 
 import 'package:car_rental/Screens/Car%20Details/car_details.dart';
 import 'package:car_rental/Screens/Chat/chat.dart';
+import 'package:car_rental/Screens/Chat/chat_bot.dart';
 import 'package:car_rental/Screens/Home/widgets/card_home.dart';
 import 'package:car_rental/Screens/Home/widgets/home_widget.dart';
 import 'package:car_rental/Screens/Location/location.dart';
@@ -26,6 +28,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mHeight = MediaQuery.of(context).size.height;
+    final mWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         leading: appBarLogo(),
@@ -209,7 +213,7 @@ class HomeScreen extends StatelessWidget {
                     // const SizedBox(width: 10),
                     GetBuilder<Controller>(builder: (controller) {
                       return SizedBox(
-                        width: 130,
+                        width: 105,
                         child: DropdownButton<String>(
                           hint: const Text(
                             "SORT BY DISTRICT",
@@ -270,7 +274,7 @@ class HomeScreen extends StatelessWidget {
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      childAspectRatio: 1 / 1.55,
+                      childAspectRatio: 1 / 1.60,
                     ),
                     itemBuilder: (context, index) {
                       final data = controller.totalCars[index];
@@ -287,7 +291,7 @@ class HomeScreen extends StatelessWidget {
                             side: BorderSide(width: 2, color: kwhite),
                           ),
                           onPressed: () {
-                            Get.to(CarDetails(id: data));
+                            Get.to(CarDetails(id: data.id));
                           },
                           child: Text(
                             'BOOK',
@@ -299,12 +303,6 @@ class HomeScreen extends StatelessWidget {
                   );
                 },
               ),
-              // sizedBox10,
-              // ElevatedButton(
-              //   style: elvButtonStyle,
-              //   onPressed: () {},
-              //   child: const Text('LOAD MORE▼'),
-              // ),
               sizedBox15,
               Container(
                 width: double.infinity,
@@ -359,11 +357,9 @@ class HomeScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromARGB(255, 21, 19, 135),
         onPressed: () {
-          Get.to(LocationPage());
+          //Get.to(LocationPage());
 
-          // Navigator.of(context).push(MaterialPageRoute(
-          //   builder: (context) => const ChatPage(),
-          // ));
+          Get.to(MyWidget());
         },
         child: const Icon(Icons.chat_bubble),
       ),

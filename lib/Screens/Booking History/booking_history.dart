@@ -16,7 +16,7 @@ class BookingHistory extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Booking History'),
           centerTitle: true,
-          bottom: TabBar(tabs: [
+          bottom: const TabBar(tabs: [
             Tab(text: 'UPCOMING'),
             Tab(text: 'COMPLETED'),
             Tab(text: 'CANCELLED'),

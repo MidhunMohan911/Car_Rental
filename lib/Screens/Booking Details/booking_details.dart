@@ -35,11 +35,11 @@ class BookingDetailsPage extends StatelessWidget {
             // bookingDetailCard('Customer', 'Midhun Mohan'),
             bookingDetailCard('Trip starts', bookingDetailsModel.tripStarts),
             bookingDetailCard('Trip End', bookingDetailsModel.tripEnds),
-            bookingDetailCard('Pickup Location', bookingDetailsModel.location),
+            bookingDetailCard('Pickup Location', bookingDetailsModel.location!),
             bookingDetailCard('Our HelpLine', '+91 7559017884'),
             sizedBox10,
             Text(
-              'Total Amount : ' + bookingDetailsModel.amount,
+              'Total Amount : ' + bookingDetailsModel.amount + '/-',
               style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 22),
             ),
             sizedBox10,
@@ -49,7 +49,8 @@ class BookingDetailsPage extends StatelessWidget {
                   onPressed: () {
                     showDialog(
                       context: context,
-                      builder: (context) => const PaymentOptions(),
+                      builder: (context) => PaymentOptions(
+                          bookingDetailsModel: bookingDetailsModel),
                     );
                   },
                   child: const Text(

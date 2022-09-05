@@ -25,9 +25,6 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var lodinggg = controller.loading.value;
-    lodinggg = false;
-
     return SafeArea(
       child: Scaffold(
         body: Stack(
@@ -39,160 +36,170 @@ class LoginPage extends StatelessWidget {
               fit: BoxFit.fill,
             ),
             Center(
-              child: GlassmorphicContainer(
-                width: 300,
-                height: 450,
-                borderRadius: 20,
-                linearGradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Colors.black.withOpacity(0.2),
-                      Colors.black.withOpacity(0.2)
-                    ]),
-                border: 3,
-                blur: 4,
-                borderGradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Colors.white.withOpacity(0.1),
-                      Colors.white.withOpacity(0.1)
-                    ]),
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        sizedBox15,
-                        const CircleAvatar(
-                          backgroundImage:
-                              AssetImage('assets/images/lock.jpeg'),
-                          radius: 22,
-                          backgroundColor: Colors.white,
-                        ),
-                        sizedBox10,
-                        Text('Sign In',
-                            style: TextStyle(
-                                color: kwhite,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 20)),
-                        sizedBox10,
-                        TextFormPage(
-                          title: 'Email',
-                          controller: _userNameController,
-                          obscuretext: false,
-                          keyboardtype: TextInputType.emailAddress,
-                          validator: (String? value) {
-                            if (value!.isEmpty || !value.isEmail) {
-                              return "Enter Correct Email Address";
-                            } else {
-                              return null;
-                            }
-                          },
-                        ),
-                        sizedBox15,
-                        TextFormPage(
-                            title: 'Password',
-                            controller: _passwordController,
-                            obscuretext: true,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please enter password';
-                              } else if (value.length < 6) {
-                                return 'please enter atleast 6 digit password';
-                              }
-
-                              return null;
-                            }),
-                        sizedBox30,
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 15),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  exit(0);
-                                },
-                                child: const Text('✘ CLOSE'),
-                                style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all(kRed)),
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 15),
-                              child: ElevatedButton(
-                                  onPressed: () async {
-                                    // lodinggg = true;
-                                    // print(lodinggg);
-                                    bool isValid =
-                                        _formKey.currentState!.validate();
-
-                                    if (isValid) {
-                                      UserAuthService.loginUser(
-                                          userName: _userNameController.text,
-                                          password:
-                                              _passwordController.text.trim());
-                                      // lodinggg = false;
-                                      Get.offAll(HomeScreen());
-                                    }
-                                  },
-                                  child: const Text('LOGIN ➲')),
-                            ),
-                          ],
-                        ),
-                        sizedBox10,
-                        TextButton(
-                            onPressed: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) =>
-                                      LoginWithOtp(formKey: _formKey));
-                            },
-                            child: Text(
-                              'LOGIN WITH OTP',
+              child: SingleChildScrollView(
+                child: GlassmorphicContainer(
+                  width: 300,
+                  height: 450,
+                  borderRadius: 20,
+                  linearGradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.black.withOpacity(0.2),
+                        Colors.black.withOpacity(0.2)
+                      ]),
+                  border: 3,
+                  blur: 4,
+                  borderGradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withOpacity(0.1),
+                        Colors.white.withOpacity(0.1)
+                      ]),
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          sizedBox15,
+                          const CircleAvatar(
+                            backgroundImage:
+                                AssetImage('assets/images/lock.jpeg'),
+                            radius: 22,
+                            backgroundColor: Colors.white,
+                          ),
+                          sizedBox10,
+                          Text('Sign In',
                               style: TextStyle(
                                   color: kwhite,
                                   fontWeight: FontWeight.w500,
-                                  shadows: const [
-                                    Shadow(color: Colors.black, blurRadius: 10)
-                                  ]),
-                            )),
-                        sizedBox10,
-                        RichText(
-                            text: TextSpan(
-                                text: ' Already have an account ? ',
+                                  fontSize: 20)),
+                          sizedBox10,
+                          TextFormPage(
+                            title: 'Email',
+                            controller: _userNameController,
+                            obscuretext: false,
+                            keyboardtype: TextInputType.emailAddress,
+                            validator: (String? value) {
+                              if (value!.isEmpty || !value.isEmail) {
+                                return "Enter Correct Email Address";
+                              } else {
+                                return null;
+                              }
+                            },
+                          ),
+                          sizedBox15,
+                          TextFormPage(
+                              title: 'Password',
+                              controller: _passwordController,
+                              obscuretext: true,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Please enter password';
+                                } else if (value.length < 6) {
+                                  return 'please enter atleast 6 digit password';
+                                }
+
+                                return null;
+                              }),
+                          sizedBox30,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 15),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    exit(0);
+                                  },
+                                  child: const Text('✘ CLOSE'),
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all(kRed)),
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 15),
+                                child: Obx(() {
+                                  return ElevatedButton.icon(
+                                      onPressed: controller.loginLoading.value
+                                          ? null
+                                          : () {
+                                              bool isValid = _formKey
+                                                  .currentState!
+                                                  .validate();
+
+                                              if (isValid) {
+                                                controller.loginFile(
+                                                    _userNameController.text,
+                                                    _passwordController.text);
+                                              }
+                                            },
+                                      icon: controller.loginLoading.value
+                                          ? CircularProgressIndicator(
+                                              color: kwhite)
+                                          : const Icon(Icons.login),
+                                      label: Text(controller.loginLoading.value
+                                          ? 'processing'
+                                          : 'LOGIN'));
+                                }),
+                              ),
+                            ],
+                          ),
+                          sizedBox10,
+                          TextButton(
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) =>
+                                        LoginWithOtp(formKey: _formKey));
+                              },
+                              child: Text(
+                                'LOGIN WITH OTP',
                                 style: TextStyle(
                                     color: kwhite,
                                     fontWeight: FontWeight.w500,
-                                    fontSize: 15,
                                     shadows: const [
                                       Shadow(
-                                          color: Colors.black, blurRadius: 25)
+                                          color: Colors.black, blurRadius: 10)
                                     ]),
-                                children: [
-                              TextSpan(
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () => Navigator.of(context)
-                                            .push(MaterialPageRoute(
-                                          builder: (context) => SignUpPage(),
-                                        )),
-                                  text: 'Sign Up ?',
-                                  style: const TextStyle(
-                                      color: Colors.blue,
-                                      fontSize: 15,
+                              )),
+                          sizedBox10,
+                          RichText(
+                              text: TextSpan(
+                                  text: ' Already have an account ? ',
+                                  style: TextStyle(
+                                      color: kwhite,
                                       fontWeight: FontWeight.w500,
-                                      shadows: [
+                                      fontSize: 15,
+                                      shadows: const [
                                         Shadow(
                                             color: Colors.black, blurRadius: 25)
-                                      ])),
-                            ])),
-                      ],
+                                      ]),
+                                  children: [
+                                TextSpan(
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () => Navigator.of(context)
+                                              .push(MaterialPageRoute(
+                                            builder: (context) => SignUpPage(),
+                                          )),
+                                    text: 'Sign Up ?',
+                                    style: const TextStyle(
+                                        color: Colors.blue,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500,
+                                        shadows: [
+                                          Shadow(
+                                              color: Colors.black,
+                                              blurRadius: 25)
+                                        ])),
+                              ])),
+                        ],
+                      ),
                     ),
                   ),
                 ),

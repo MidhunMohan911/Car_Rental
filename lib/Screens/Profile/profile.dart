@@ -101,88 +101,82 @@ class ProfilePage extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(10)),
                                 backgroundColor: themeColor,
                                 content: SizedBox(
-                                  height: 250,
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        'Reset Your Password',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            color: kwhite,
-                                            fontSize: 20),
+                                  height: 280,
+                                  child: Form(
+                                    key: _formKey,
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            'Reset Your Password',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                color: kwhite,
+                                                fontSize: 20),
+                                          ),
+                                          sizedBox10,
+                                          TextFormPage(
+                                              title: 'Password',
+                                              controller: _passwordController,
+                                              obscuretext: true,
+                                              validator: (value) {
+                                                if (value!.isEmpty) {
+                                                  return 'Please enter password';
+                                                } else if (value.length < 6) {
+                                                  return 'please enter atleast 6 digit password';
+                                                }
+
+                                                return null;
+                                              }),
+                                          TextFormPage(
+                                            title: 'Confirm Password',
+                                            controller:
+                                                confirmPasswordController,
+                                            obscuretext: true,
+                                            validator: (value) {
+                                              if (value!.isEmpty) {
+                                                return 'Please confirm password';
+                                              } else if (_passwordController
+                                                      .text !=
+                                                  confirmPasswordController
+                                                      .text) {
+                                                return 'Password do not match';
+                                              }
+                                              return null;
+                                            },
+                                          ),
+                                          sizedBox15,
+                                          ElevatedButton(
+                                              style: elvButtonStyleWhite,
+                                              onPressed: () {
+                                                bool? isValid = _formKey
+                                                    .currentState!
+                                                    .validate();
+                                                print(isValid);
+
+                                                if (isValid) {
+                                                  final ProfileModel
+                                                      profileModel =
+                                                      ProfileModel(
+                                                          password:
+                                                              _passwordController
+                                                                  .text);
+
+                                                  UserProfileService
+                                                      .resetUserProfile(
+                                                          profileModel,
+                                                          _passwordController
+                                                              .text);
+                                                }
+                                              },
+                                              child: const Text(
+                                                'Reset',
+                                                style: TextStyle(
+                                                    color: Colors.black),
+                                              ))
+                                        ],
                                       ),
-                                      sizedBox10,
-                                      TextFormPage(
-                                          title: 'Password',
-                                          controller: _passwordController,
-                                          obscuretext: true,
-                                          validator: (value) {
-                                            if (value!.isEmpty) {
-                                              return 'Please enter password';
-                                            } else if (value.length < 6) {
-                                              return 'please enter atleast 6 digit password';
-                                            }
-
-                                            return null;
-                                          }),
-                                      TextFormPage(
-                                        title: 'Confirm Password',
-                                        controller: confirmPasswordController,
-                                        obscuretext: true,
-                                        validator: (value) {
-                                          if (value!.isEmpty) {
-                                            return 'Please confirm password';
-                                          } else if (_passwordController.text !=
-                                              confirmPasswordController.text) {
-                                            return 'Password do not match';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                      sizedBox10,
-                                      ElevatedButton(
-                                          style: elvButtonStyleWhite,
-                                          onPressed: () {
-                                            String? userId = GetLocalStorage
-                                                .getUserIdAndToken("uId");
-                                            final ProfileModel profileModel =
-                                                ProfileModel(
-                                                    password:
-                                                        _passwordController
-                                                            .text);
-                                            print(profileModel.password);
-
-                                            UserProfileService.resetUserProfile(
-                                                profileModel,
-                                                _passwordController.text);
-
-                                            // bool? isValid = _formKey
-                                            //     .currentState!
-                                            //     .validate();
-                                            // print(isValid);
-
-                                            // if (isValid) {
-                                            //   String? userId = GetLocalStorage
-                                            //       .getUserIdAndToken("uId");
-                                            //   final ProfileModel profileModel =
-                                            //       ProfileModel(
-                                            //           password:
-                                            //               _passwordController
-                                            //                   .text);
-
-                                            //   UserProfileService
-                                            //       .resetUserProfile(
-                                            //           profileModel,
-                                            //           userId!,
-                                            //           _passwordController.text);
-                                            //}
-                                          },
-                                          child: const Text(
-                                            'Reset',
-                                            style:
-                                                TextStyle(color: Colors.black),
-                                          ))
-                                    ],
+                                    ),
                                   ),
                                 ),
                               );

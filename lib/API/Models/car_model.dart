@@ -8,6 +8,8 @@ import 'dart:convert';
 //     TotalCarsModel.fromJson(json.decode(str), "sort");
 
 // String totalCarsModelToJson(TotalCarsModel data) => json.encode(data.toJson());
+// List<CarModel> carModelFromJson(String str) => List<CarModel>.from(json.decode(str).map((x) => CarModel.fromJson(x)));
+
 
 class TotalCarsModel {
   TotalCarsModel({

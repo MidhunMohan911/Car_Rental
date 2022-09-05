@@ -29,7 +29,7 @@ class WishlistPage extends StatelessWidget {
         actions: [appBarPopUp(context)],
       ),
       body: FutureBuilder<List<WishlistModel>?>(
-          future: WishlistServices.getDataFromWishlist(
+          future: WishlistServices.getAllDataFromWishlist(
             userId: userId!,
           ),
           builder: (context, AsyncSnapshot<List<WishlistModel>?> snapshot) {
@@ -91,15 +91,7 @@ class WishlistPage extends StatelessWidget {
                             side: BorderSide(width: 2, color: themeColor),
                           ),
                           onPressed: () {
-                            // Future<String> bbb =
-                            //     CarServices.getSingleCar(carId: data.id!);
-                            print('hhjhjjh');
-                            String carDetails = '';
-                           // bbb.then((value) => carDetails = value);
-                            var carDetail = jsonDecode(carDetails);
-                            print('jhjjhjhjhh' + carDetail);
-                            var car = CarModel.fromJson(carDetail);
-                            print(car);
+                            Get.to(CarDetails(id: data.id!));
                           },
                           child: Text(
                             'VIEW CAR',
