@@ -5,8 +5,6 @@ import 'package:car_rental/API/Services/search_service.dart';
 import 'package:car_rental/Screens/Home/home.dart';
 import 'package:get/get.dart';
 
-
-
 class Controller extends GetxController {
   String? selected;
   int? ageSelected;
@@ -98,12 +96,20 @@ class Controller extends GetxController {
     }
   }
 
- 
+  filter({required bool isLowtoHigh}) {
+    if (isLowtoHigh) {
+      totalCars.value.sort((a, b) => a.price.compareTo(b.price));
+    } else {
+      totalCars.value.sort((a, b) => b.price.compareTo(a.price));
+
+      update();
+    }
+  }
 
   @override
   void onInit() {
     getData("/getcarData", "data").then((value) => totalCars.value = value);
-   // getAllWishlistData(userIdd!).then((value) => wishlistCars.value = value);
+    // getAllWishlistData(userIdd!).then((value) => wishlistCars.value = value);
 
     super.onInit();
   }

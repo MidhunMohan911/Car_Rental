@@ -7,7 +7,6 @@ import 'package:car_rental/API/Services/profile_services.dart';
 import 'package:get/get.dart';
 
 class UserProfileController extends GetxController {
-  // Map<String, dynamic>? userData;
   Rx<ProfileModel?> profileModel = ProfileModel().obs;
   String? userId = GetLocalStorage.getUserIdAndToken("uId");
 
@@ -15,15 +14,10 @@ class UserProfileController extends GetxController {
     try {
       profileModel.value =
           await UserProfileService.updateUserProfile(profile, userId);
-
-      // print("called controller class $data");
-
-      // profileModel.value = data!;
     } catch (e) {
       print("Catch block called");
       print(e);
     }
-    // update();
   }
 
   Future<ProfileModel?> getUserData(String userId) async {
@@ -35,8 +29,6 @@ class UserProfileController extends GetxController {
       print(e);
       return null;
     }
-    // update();
-    // return null;
   }
 
   @override

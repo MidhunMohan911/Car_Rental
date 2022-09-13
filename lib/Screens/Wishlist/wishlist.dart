@@ -5,14 +5,12 @@ import 'dart:convert';
 import 'package:car_rental/API/Controller/wishlist_controller.dart';
 import 'package:car_rental/API/Models/car_model.dart';
 import 'package:car_rental/API/Models/wishlist_model.dart';
-import 'package:car_rental/API/Services/car_services.dart';
 import 'package:car_rental/API/Services/wishlist_services.dart';
 import 'package:car_rental/Screens/Car%20Details/car_details.dart';
 import 'package:car_rental/core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../API/Controller/controller.dart';
 import '../../API/Models/local_storage.dart';
 
 class WishlistPage extends StatelessWidget {
@@ -61,7 +59,6 @@ class WishlistPage extends StatelessWidget {
                     itemCount: wishlistData.length,
                     itemBuilder: (context, index) {
                       var data = wishlistData[index];
-                      //  final carData = controller.totalCars[index];
 
                       return WishlistCard(
                         image: data.imgUrl!,
@@ -71,8 +68,7 @@ class WishlistPage extends StatelessWidget {
                           onPressed: () {
                             String? userId =
                                 GetLocalStorage.getUserIdAndToken("uId");
-                            // WishlistServices.removeWishlist(
-                            //     carId: data.id!, userId: userId!);
+
                             controller.removeWishlistData(data.id!, userId!);
                             Get.snackbar('Message', 'Deleted Successfully',
                                 snackPosition: SnackPosition.BOTTOM);

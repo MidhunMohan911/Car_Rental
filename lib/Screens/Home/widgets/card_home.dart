@@ -46,7 +46,7 @@ class CardHomePage extends StatelessWidget {
                     sizedBox10,
                     Align(
                       alignment: Alignment.centerRight,
-                      child: Text('\$ $amount/-  ',
+                      child: Text(' $amount/-  ',
                           style: TextStyle(
                               color: kwhite,
                               fontWeight: FontWeight.w500,

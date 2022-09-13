@@ -125,33 +125,50 @@ class HomeScreen extends StatelessWidget {
                           height: 36,
                           width: 100,
                           child: TextField(
-                            controller: searchController,
-                            decoration: InputDecoration(
-                              contentPadding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              hintText: 'search',
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                  borderSide: BorderSide(color: themeColor)),
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                  borderSide: BorderSide(color: themeColor)),
-                            ),
-                          ),
+                              controller: searchController,
+                              textCapitalization: TextCapitalization.sentences,
+                              decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  hintText: 'search',
+                                  enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                      borderSide:
+                                          BorderSide(color: themeColor)),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                      borderSide:
+                                          BorderSide(color: themeColor)),
+                                  suffixIcon: searchController.text.isEmpty
+                                      ? null
+                                      : GestureDetector(
+                                          onTap: () {
+                                            searchController.clear();
+                                            controller
+                                                .getData("/getcarData", "data")
+                                                .then((value) => controller
+                                                    .totalCars.value = value);
+                                          },
+                                          child: Icon(Icons.close)))),
                         ),
                         const SizedBox(width: 3),
                         ElevatedButton(
-                          style: elvButtonStyle,
-                          onPressed: () {
-                            // Search.searchCar(brand: searchController.text);
+                          style: elvButtonStyle.copyWith(
+                              backgroundColor: searchController.text.isEmpty
+                                  ? MaterialStateProperty.all(Colors.grey)
+                                  : MaterialStateProperty.all(Colors.black)),
+                          onPressed: searchController.text.isEmpty
+                              ? null
+                              : () {
+                                  // Search.searchCar(brand: searchController.text);
 
-                            controller
-                                .getData("/search", "data",
-                                    isSearch: true,
-                                    brand: searchController.text)
-                                .then((value) =>
-                                    controller.totalCars.value = value);
-                          },
+                                  controller
+                                      .getData("/search", "data",
+                                          isSearch: true,
+                                          brand: searchController.text)
+                                      .then((value) =>
+                                          controller.totalCars.value = value);
+                                },
                           child: Text(
                             'Search',
                             style: TextStyle(color: kwhite, fontSize: 10),
@@ -182,10 +199,10 @@ class HomeScreen extends StatelessWidget {
                                               fontSize: 16,
                                               fontWeight: FontWeight.w600)),
                                       onPressed: () {
-                                        controller
-                                            .getData("/lowtohigh", "sort")
-                                            .then((value) => controller
-                                                .totalCars.value = value);
+                                        controller.filter(isLowtoHigh: true);
+                                        // .getData("/lowtohigh", "sort")
+                                        // .then((value) => controller
+                                        //     .totalCars.value = value);
                                         Get.back();
                                       },
                                       child: const Text('Low to High')),
@@ -196,10 +213,11 @@ class HomeScreen extends StatelessWidget {
                                               fontSize: 16,
                                               fontWeight: FontWeight.w600)),
                                       onPressed: () {
-                                        controller
-                                            .getData("/hightolow", "sorttwo")
-                                            .then((value) => controller
-                                                .totalCars.value = value);
+                                        // controller
+                                        //     .getData("/hightolow", "sorttwo")
+                                        //     .then((value) => controller
+                                        //         .totalCars.value = value);
+                                        controller.filter(isLowtoHigh: false);
                                         Get.back();
                                       },
                                       child: const Text('High to Low')),
@@ -216,7 +234,7 @@ class HomeScreen extends StatelessWidget {
                         width: 105,
                         child: DropdownButton<String>(
                           hint: const Text(
-                            "SORT BY DISTRICT",
+                            "DISTRICT",
                             style: TextStyle(color: Colors.black, fontSize: 12),
                           ),
                           value: controller.districtSelected,
@@ -253,8 +271,8 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               sizedBox10,
-              Obx(
-                () {
+              GetX<Controller>(
+                builder: (co) {
                   if (controller.loading.value) {
                     return const Center(
                       child: CircularProgressIndicator(),
@@ -354,15 +372,15 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color.fromARGB(255, 21, 19, 135),
-        onPressed: () {
-          //Get.to(LocationPage());
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: const Color.fromARGB(255, 21, 19, 135),
+      //   onPressed: () {
+      //     //Get.to(LocationPage());
 
-          Get.to(MyWidget());
-        },
-        child: const Icon(Icons.chat_bubble),
-      ),
+      //     Get.to(MyWidget());
+      //   },
+      //   child: const Icon(Icons.chat_bubble),
+      // ),
     );
   }
 }

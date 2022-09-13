@@ -1,12 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:car_rental/API/Models/profile_model.dart';
-import 'package:car_rental/API/Services/dio_client.dart';
+
 import 'package:car_rental/API/Services/payment_service.dart';
 import 'package:car_rental/Screens/Booking%20Details/Widgets/debitcard_payment.dart';
 import 'package:car_rental/core/core.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

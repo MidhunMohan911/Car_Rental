@@ -47,7 +47,8 @@ class EditProfilePage extends StatelessWidget {
 
           return SingleChildScrollView(
               physics: const ClampingScrollPhysics(),
-              child: GetBuilder<UserProfileController>(initState: (state) {
+              child: GetBuilder<UserProfileController>(
+                initState: (state) {
                 nameController.text = userDetails.name!;
                 emailController.text = userDetails.email!;
                 phoneController.text = userDetails.phone.toString();
@@ -211,13 +212,11 @@ class EditProfilePage extends StatelessWidget {
                               address: addressController.text,
                               district: districtController.text,
                             );
-                            // UserProfileService.updateUserProfile(profileModel);
-                            // UserAuthService.signUpUser(profileModel);
+
                             contrlrr.updateUserData(profileModel, userId!);
-                            // contrlrr.getUserData(userId);
+
                             print(profileModel);
                             print(profileModel.name);
-                            //Get.back();
                           }
                         },
                         child: const Text('Submit'),

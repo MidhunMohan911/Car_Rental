@@ -1,17 +1,12 @@
 // ignore_for_file: avoid_print
 
-import 'package:car_rental/API/Controller/book_controller.dart';
 import 'package:car_rental/API/Controller/car_details_controller.dart';
 import 'package:car_rental/API/Controller/controller.dart';
-// import 'package:car_rental/API/Controller/singlecar_controller.dart';
 import 'package:car_rental/API/Models/booking_details_model.dart';
 import 'package:car_rental/API/Models/car_model.dart';
 import 'package:car_rental/API/Models/local_storage.dart';
-import 'package:car_rental/API/Models/singlecar_model.dart';
-import 'package:car_rental/API/Models/wishlist_model.dart';
 import 'package:car_rental/API/Services/book_car_services.dart';
-import 'package:car_rental/API/Services/car_services.dart';
-import 'package:car_rental/API/Services/wishlist_services.dart';
+
 import 'package:car_rental/Screens/Location/location.dart';
 import 'package:car_rental/core/core.dart';
 import 'package:flutter/cupertino.dart';
@@ -74,7 +69,7 @@ class _CarDetailsState extends State<CarDetails> {
               : "'Total days : ${dateRange!.duration.inDays} days'";
 
           String amount = dateRange == null
-              ? "No amount"
+              ? "0 "
               : '${dateRange!.duration.inDays * carModel.price}';
 
           return Column(
@@ -238,8 +233,10 @@ class _CarDetailsState extends State<CarDetails> {
                     Text(difference,
                         style: TextStyle(
                             color: kwhite, fontSize: 11, height: 1.8)),
-                    Text('Total Amount : $amount /-',
-                        style: TextStyle(color: kwhite, height: 1.8)),
+                    dateRange == null
+                        ? Text('')
+                        : Text('Total Amount : $amount/-',
+                            style: TextStyle(color: kwhite, height: 1.8)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -269,7 +266,6 @@ class _CarDetailsState extends State<CarDetails> {
                               location: carModel.location,
                               tripStarts: start,
                               amount: amount,
-                            
                             );
 
                             Get.to(BookingDetailsPage(

@@ -14,7 +14,9 @@ class UpcomingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(onPressed: () {
-        print(bookingHistoryController.completedData());
+        print(bookingHistoryController.upcomingTrips.length);
+        print(bookingHistoryController.completedTrips.length);
+        print(bookingHistoryController.cancelledTrips.length);
       }),
       body: Obx(() {
         return Column(
@@ -50,7 +52,11 @@ class UpcomingPage extends StatelessWidget {
                           side: BorderSide(width: 2, color: kwhite),
                         ),
                         onPressed: () {
-                          bookingHistoryController.cancelTripData(data.carId!);
+                          bookingHistoryController.cancelTripData(data.id!);
+                          print(data.carId);
+                          Get.snackbar(
+                              'Message', 'You have cancelled the Booking',
+                              snackPosition: SnackPosition.BOTTOM);
                         },
                         child: Text(
                           'CANCEL BOOKING',
