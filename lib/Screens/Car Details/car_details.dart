@@ -37,9 +37,7 @@ class _CarDetailsState extends State<CarDetails> {
     ));
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: () async {
-        print("Single car model name");
-      }),
+  
       appBar: AppBar(
         title: appBarTitle(),
         actions: [

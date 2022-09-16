@@ -57,18 +57,19 @@ class BookingDetailsPage extends StatelessWidget {
                     'PAY',
                     style: TextStyle(
                         color: Color.fromARGB(255, 14, 92, 156),
-                        fontWeight: FontWeight.w500),
+                        fontWeight: FontWeight.w500,
+                        fontSize: 20),
                   ),
                 ),
                 const SizedBox(
                   width: 30,
                 ),
-                OutlinedButton(
-                    onPressed: () {},
-                    child: const Text(
-                      'COUPON',
-                      style: TextStyle(color: Colors.green),
-                    ))
+                // OutlinedButton(
+                //     onPressed: () {},
+                //     child: const Text(
+                //       'COUPON',
+                //       style: TextStyle(color: Colors.green),
+                //     ))
               ],
             )
           ],

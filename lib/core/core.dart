@@ -130,7 +130,12 @@ completeCancelCard(String car, String tripStart, String tripEnds,
               'Total Rent :$totalrent',
               style: TextStyle(color: kwhite, fontSize: 19, height: 2.2),
             ),
-            sizedBox30,
+            sizedBox10,
+            const Text(
+              'Your Money will be refunded in 7 days',
+              style: TextStyle(color: Colors.yellow),
+            ),
+            sizedBox10,
             Text(
               lasttitle,
               style: TextStyle(

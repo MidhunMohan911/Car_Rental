@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-
 import 'package:car_rental/API/Services/payment_service.dart';
 import 'package:car_rental/Screens/Booking%20Details/Widgets/debitcard_payment.dart';
 import 'package:car_rental/core/core.dart';
@@ -33,44 +32,45 @@ class _PaymentOptionsState extends State<PaymentOptions> {
         style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
       ),
       content: SizedBox(
-        height: 180,
+        height: 100,
         child: Column(
           children: [
+            sizedBox15,
             SizedBox(
                 height: 50,
                 width: double.infinity,
                 child:
                     RazorPay(bookingDetailsModel: widget.bookingDetailsModel)),
-            sizedBox10,
-            SizedBox(
-              height: 50,
-              width: double.infinity,
-              child: ElevatedButton(
-                  style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all(Colors.yellow)),
-                  onPressed: () {},
-                  child: Image.asset(
-                    'assets/images/580b57fcd9996e24bc43c530.png',
-                    width: 150,
-                    height: 30,
-                  )),
-            ),
-            sizedBox10,
-            SizedBox(
-              height: 50,
-              width: double.infinity,
-              child: ElevatedButton(
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(themeColor)),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => DebitCardPayment(),
-                    );
-                  },
-                  child: const Text('💳 Debit or Credit Card')),
-            ),
+            sizedBox15,
+            // SizedBox(
+            //   height: 50,
+            //   width: double.infinity,
+            //   child: ElevatedButton(
+            //       style: ButtonStyle(
+            //           backgroundColor:
+            //               MaterialStateProperty.all(Colors.yellow)),
+            //       onPressed: () {},
+            //       child: Image.asset(
+            //         'assets/images/580b57fcd9996e24bc43c530.png',
+            //         width: 150,
+            //         height: 30,
+            //       )),
+            // ),
+            // sizedBox10,
+            // SizedBox(
+            //   height: 50,
+            //   width: double.infinity,
+            //   child: ElevatedButton(
+            //       style: ButtonStyle(
+            //           backgroundColor: MaterialStateProperty.all(themeColor)),
+            //       onPressed: () {
+            //         showDialog(
+            //           context: context,
+            //           builder: (context) => DebitCardPayment(),
+            //         );
+            //       },
+            //       child: const Text('💳 Debit or Credit Card')),
+            // ),
           ],
         ),
       ),
@@ -135,21 +135,19 @@ class _RazorPayState extends State<RazorPay> {
         bookingDetails.tripStarts +
         bookingDetails.id!);
 
-    // verifySignature(
-    //   signature: response.signature,
-    //   paymentId: response.paymentId,
-    //   orderId: response.orderId,
-    // );
+    Get.snackbar('Message', 'Payment success',
+        colorText: kwhite,
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.black);
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
     print(response);
     // Do something when payment fails
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(response.message ?? ''),
-      ),
-    );
+    Get.snackbar('Warning', 'Payment failed',
+        colorText: kwhite,
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.black);
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {
@@ -209,44 +207,6 @@ class _RazorPayState extends State<RazorPay> {
     };
     _razorpay.open(options);
   }
-
-  // verifySignature({
-  //   String? signature,
-  //   String? paymentId,
-  //   String? orderId,
-  // }) async {
-  //   Map<String, dynamic> body = {
-  //     'razorpay_signature': signature,
-  //     'razorpay_payment_id': paymentId,
-  //     'razorpay_order_id': orderId,
-  //   };
-
-  //   var parts = [];
-  //   body.forEach((key, value) {
-  //     parts.add('${Uri.encodeQueryComponent(key)}='
-  //         '${Uri.encodeQueryComponent(value)}');
-  //   });
-  //   var formData = parts.join('&');
-  //   var res = await http.post(
-  //     Uri.https(
-  //       "10.0.2.2", // my ip address , localhost
-  //       "razorpay_signature_verify.php",
-  //     ),
-  //     headers: {
-  //       "Content-Type": "application/x-www-form-urlencoded", // urlencoded
-  //     },
-  //     body: formData,
-  //   );
-
-  //   print(res.body);
-  //   if (res.statusCode == 200) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: Text(res.body),
-  //       ),
-  //     );
-  //   }
-  // }
 
   @override
   void dispose() {
