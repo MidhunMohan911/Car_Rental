@@ -55,8 +55,6 @@ GetX has a huge ecosystem, a large community, a large number of collaborators, a
 
 ![Screenshot_1663396296](https://user-images.githubusercontent.com/103373908/190844046-4ae60f01-a93e-45d6-b21c-e52cd9437a8f.png)
 
-![Screenshot_1663396292](https://user-images.githubusercontent.com/103373908/190844048-49342ea7-b5fe-4320-8ea7-08ddce9d4aef.png)
-
 ![Screenshot_1663396128](https://user-images.githubusercontent.com/103373908/190844058-b81bd148-e96e-4165-8f7f-a61eeedd4dcb.png)
 
 ![Screenshot_1663396169](https://user-images.githubusercontent.com/103373908/190844070-37965bfd-36ba-4c16-a668-9ed4a0035388.png)
