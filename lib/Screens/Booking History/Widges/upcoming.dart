@@ -13,11 +13,6 @@ class UpcomingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        print(bookingHistoryController.upcomingTrips.length);
-        print(bookingHistoryController.completedTrips.length);
-        print(bookingHistoryController.cancelledTrips.length);
-      }),
       body: Obx(() {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,

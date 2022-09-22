@@ -16,6 +16,7 @@ import 'package:car_rental/core/core.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key? key}) : super(key: key);
@@ -348,7 +349,18 @@ class HomeScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         GestureDetector(
-                            onTap: () {},
+                            onTap: () async {
+                              var url =
+                                  'https://www.instagram.com/_xx._maddy__/';
+                              if (await canLaunch(url)) {
+                                await launch(
+                                  url,
+                                  universalLinksOnly: true,
+                                );
+                              } else {
+                                throw 'There was a problem to open the url: $url';
+                              }
+                            },
                             child: ClipRRect(
                                 child: Image.asset(
                               'assets/images/instagram_2 (1).png',
@@ -356,7 +368,17 @@ class HomeScreen extends StatelessWidget {
                               height: 25,
                             ))),
                         GestureDetector(
-                            onTap: () {},
+                            onTap: () async {
+                              var url = 'https://roadsterrental.online/';
+                              if (await canLaunch(url)) {
+                                await launch(
+                                  url,
+                                  universalLinksOnly: true,
+                                );
+                              } else {
+                                throw 'There was a problem to open the url: $url';
+                              }
+                            },
                             child: ClipRRect(
                                 child: Image.asset(
                               'assets/images/google.png',

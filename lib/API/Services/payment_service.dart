@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:car_rental/API/Models/booking_details_model.dart';
 import 'package:car_rental/API/Models/local_storage.dart';
 import 'package:car_rental/API/Services/dio_client.dart';
+import 'package:car_rental/Screens/Booking%20History/booking_history.dart';
 import 'package:car_rental/Screens/Home/home.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
@@ -44,7 +45,7 @@ class PaymentService {
       var response = await dio.post('/razorpaysuccess/${bookingModel.id!}',
           data: jsonEncode(payload));
 
-      Get.offAll(HomeScreen());
+      Get.offAll(BookingHistory());
 
       return response.data;
     } on DioError catch (e) {

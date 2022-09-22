@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:http/http.dart' as http;
+import '../../../API/Controller/controller.dart';
 import '../../../API/Controller/profile_controller.dart';
 import '../../../API/Models/booking_details_model.dart';
 import '../../../API/Models/local_storage.dart';
@@ -88,6 +89,7 @@ class RazorPay extends StatefulWidget {
 
 /////////////======///////
 UserProfileController userProfileController = Get.put(UserProfileController());
+Controller controller = Controller();
 
 class _RazorPayState extends State<RazorPay> {
   // ProfileModel? profileModel;
@@ -168,6 +170,9 @@ class _RazorPayState extends State<RazorPay> {
     String basicAuth =
         'Basic ${base64Encode(utf8.encode('$username:$password'))}';
 
+    controller.loginLoading.value = true;
+    await Future.delayed(const Duration(seconds: 2));
+
     Map<String, dynamic> body = {
       "amount": (int.parse(widget.bookingDetailsModel.amount) * 100).toString(),
       "currency": "INR",
@@ -187,6 +192,7 @@ class _RazorPayState extends State<RazorPay> {
       openGateway(jsonDecode(res.body)['id']);
     }
     print(res.body);
+    controller.loginLoading.value = false;
   }
 
   openGateway(String orderId) {
@@ -217,14 +223,20 @@ class _RazorPayState extends State<RazorPay> {
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton(
-        onPressed: () {
-          createOrder();
-        },
-        child: const Text(
-          ' Razorpay',
-          style: TextStyle(fontSize: 20),
-        ));
+    return Obx(() {
+      return OutlinedButton(
+          onPressed: controller.loginLoading.value
+              ? null
+              : () {
+                  createOrder();
+                },
+          child: controller.loginLoading.value
+              ? const CircularProgressIndicator()
+              : const Text(
+                  ' Razorpay',
+                  style: TextStyle(fontSize: 20),
+                ));
+    });
   }
 }
 
