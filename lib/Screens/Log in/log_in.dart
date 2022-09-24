@@ -151,23 +151,23 @@ class LoginPage extends StatelessWidget {
                             ],
                           ),
                           sizedBox10,
-                          TextButton(
-                              onPressed: () {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) =>
-                                        LoginWithOtp(formKey: _formKey));
-                              },
-                              child: Text(
-                                'LOGIN WITH OTP',
-                                style: TextStyle(
-                                    color: kwhite,
-                                    fontWeight: FontWeight.w500,
-                                    shadows: const [
-                                      Shadow(
-                                          color: Colors.black, blurRadius: 10)
-                                    ]),
-                              )),
+                          // TextButton(
+                          //     onPressed: () {
+                          //       showDialog(
+                          //           context: context,
+                          //           builder: (context) =>
+                          //               LoginWithOtp(formKey: _formKey));
+                          //     },
+                          //     child: Text(
+                          //       'LOGIN WITH OTP',
+                          //       style: TextStyle(
+                          //           color: kwhite,
+                          //           fontWeight: FontWeight.w500,
+                          //           shadows: const [
+                          //             Shadow(
+                          //                 color: Colors.black, blurRadius: 10)
+                          //           ]),
+                          //     )),
                           sizedBox10,
                           RichText(
                               text: TextSpan(
